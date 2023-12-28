@@ -138,7 +138,7 @@ client.on("interactionCreate", (interaction) => {
     handleCommand();
 });
 
-
+require('./dashboard/server')
 
 client.login(TOKEN);
 console.log("LOGGED IN!")

@@ -1,0 +1,20 @@
+nav.navbar.navbar-expand-lg.navbar-light
+  .container-fluid
+    a.navbar-brand(href='#') Panzer
+    button.navbar-toggler(type='button', data-bs-toggle='collapse', data-bs-target='#navbar', aria-controls='navbar', aria-expanded='false', aria-label='Toggle navigation')
+      span.navbar-toggler-icon
+    #navbar.collapse.navbar-collapse
+        .navbar-nav
+            a.nav-link(href='/commands')
+                i.fas.fa-code
+                span.pl-1 Commands
+            a.nav-link(href='/reservations')
+                i.fa-solid.fa-globe
+                span.pl-1 Reserved Countries
+            a.nav-link(href='/config')
+                i.fa-solid.fa-gear
+                span.pl-1 Configuration
+        .navbar-nav.ms-auto
+            a.nav-link(href='/login')
+                i.fa-brands.fa-discord
+                span.pl-1 Login

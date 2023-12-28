@@ -16,7 +16,7 @@ module.exports = {
         if(isHostingCol){
             await reservationCollection.deleteMany({isReserved: true})
             await collection.findOneAndDelete({isHosting: true})
-            await interaction.channel.send({
+            await interaction.editReply({
                 embeds: [new EmbedBuilder()
                 .setThumbnail(interaction.user.displayAvatarURL())
                 .setDescription('Thanks for playing!')

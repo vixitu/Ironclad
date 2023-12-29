@@ -13,12 +13,17 @@ app.locals.basedir = `${__dirname}/assets`;
 app.get('/', (req, res) => res.render('index', {subtitle: 'Home'}))
 app.get('/commands', (req, res) => res.render('commands', {
     subtitle: 'Commands',
-    categories: [{ name: 'Hosting Tools', icon: 'fas fa-gavel' },
+    categories: [{ name: 'Hosting', icon: 'fas fa-gavel' },
     { name: 'Music', icon: 'fa-solid fa-music' },
     { name: 'Other', icon: 'fa-solid fa-question' }],
-    commands: [{ name: 'Host', icon: 'fa-solid fa-slash fa-rotate-90'},
-    { name: 'Stophost', icon: 'fa-solid fa-slash fa-rotate-90'},
-    { name: 'Coop', icon: 'fa-solid fa-slash fa-rotate-90'}]
+    commands: [
+    { name: 'Host', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'},
+    { name: 'Stophost', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'},
+    { name: 'Coop', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'}],
+    commandsString: JSON.stringify([
+        { name: 'Host', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'},
+        { name: 'Stophost', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'},
+        { name: 'Coop', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'}])
 }))
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server is live on port ${port}`))

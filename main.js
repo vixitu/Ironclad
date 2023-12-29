@@ -97,6 +97,7 @@ client.on("ready", async () => {
             console.error(err);
         }
     }
+
     const rest = new REST({ version: "9" }).setToken(TOKEN);
 
     // Fetch all the guilds the bot is in

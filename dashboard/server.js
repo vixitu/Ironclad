@@ -21,9 +21,9 @@ app.get('/commands', (req, res) => res.render('commands', {
     { name: 'Stophost', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'},
     { name: 'Coop', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'}],
     commandsString: JSON.stringify([
-        { name: 'Host', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'},
-        { name: 'Stophost', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'},
-        { name: 'Coop', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'}])
+    { name: 'Host', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'},
+    { name: 'Stophost', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'},
+    { name: 'Coop', icon: 'fa-solid fa-slash fa-rotate-90', category: 'Hosting'}])
 }))
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server is live on port ${port}`))

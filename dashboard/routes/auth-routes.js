@@ -19,6 +19,12 @@ router.get('/auth', async (req, res) => {
     } catch {
         res.redirect('/')
     }
-    
 })
+
+router.get('/logout', (req, res) => {
+    res.cookies.set('key', '')
+
+    res.redirect('/')
+})
+
 module.exports = router

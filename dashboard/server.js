@@ -1,5 +1,6 @@
 const express = require('express')
 const authRoutes = require('./routes/auth-routes')
+const dashboardRoutes = require('./routes/dashboard-routes')
 const rootRoutes = require('./routes/root-routes')
 const cookies = require('cookies')
 const app = express()
@@ -18,6 +19,7 @@ app.use('/',
     rootRoutes,
     authRoutes
 )
+app.use('/dashboard', middleware.validateUser, dashboardRoutes)
 
 app.get('*', (req, res) => res.render('errors/404'))
 

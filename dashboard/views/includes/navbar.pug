@@ -15,6 +15,23 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-primary
                 i.fa-solid.fa-gear
                 span.px-1 Configuration
         .navbar-nav.ms-auto
-            a.nav-link(href='/login')
-                i.fa-brands.fa-discord
-                span.px-1 Login
+            if user
+                .dropdown.me-2
+                    .dropdown-toggle(type='button', data-bs-toggle='dropdown', aria-expanded='false')
+                        img.user-avatar.round(src=user.avatarUrl(32))
+                        span.ps-2 #{user.username}
+                        .dropdown-menu
+                            a.dropdown-item(href='/dashboard') Dashboard
+                            hr
+                            a.nav-link(href='/dashboard')
+                                i.fa-brands.fa-discord
+                                span.px-1
+                                    img.user-avatar
+                                    span #{user.username}
+                            a.dropdown-item(href='/logout')
+                                i.fa-solid.fa-arrow-right-to-bracket
+                                span.px-1 Logout
+            else
+                a.nav-link(href='/login')
+                    i.fa-brands.fa-discord
+                    span.px-1 Login

@@ -50,6 +50,7 @@ client.on("ready", async () => {
     console.log(`Logged in as ${client.user.tag}`);
     // Retrieve all guilds the bot is in
     const guilds = client.guilds.cache;
+    
 
     // Loop through each guild and create a collection if it doesn't exist
     for (const guild of guilds.values()) {
@@ -137,8 +138,8 @@ client.on("interactionCreate", (interaction) => {
     handleCommand();
 });
 
-require('./dashboard/server')
 
 client.login(TOKEN);
-console.log("LOGGED IN!")
+require('./dashboard/server')
 module.exports = client;
+console.log("LOGGED IN!")

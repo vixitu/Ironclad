@@ -5,6 +5,7 @@ const rootRoutes = require('./routes/root-routes')
 const cookies = require('cookies')
 const app = express()
 const middleware = require('./middleware')
+const client = require('../main')
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'pug')

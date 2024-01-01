@@ -1,6 +1,5 @@
 const authClient = require('./auth-client')
-const client = require('../main')
-const { GatewayIntentBits } = require("discord.js");
+const client = require('./server')
 
 module.exports.updateGuilds = async (req, res, next) => {
     try {
@@ -29,15 +28,15 @@ module.exports.validateUser = async (req, res, next) => {
     res.locals.user ? next() : res.render('errors/401')
 }
 
-function getManageableGuilds(authGuilds) {
+function getManageableGuilds(authGuilds) { // need to implement the client object into this, so i can use discord.js for the guilds, it contains way more information!
     const guilds = []
     for(const guild of authGuilds.values()){
         if(guild && guild.permissions && guild.permissions.includes('MANAGE_GUILD')){
-            console.log(`Guild with key ${guild._name} has MANAGE_GUILD permission.`)
+            const guildJS = client.guilds.cache.get(guild._id)
             guilds.push(guild)
         }
         else {
-            console.log(`Guild with key ${guild._name} has insufficient permissions.`)
+            continue;
         }
     }
     return guilds;

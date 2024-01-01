@@ -3,7 +3,6 @@ const dotenv = require("dotenv");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
-const { Client } = require('discord.js');
 const { GatewayIntentBits } = require("discord.js");
 const { MongoClient } = require('mongodb');
 
@@ -12,7 +11,6 @@ const TOKEN = process.env.TOKEN;
 const DATABASETOKEN = process.env.DATABASETOKEN;
 
 const CLIENT_ID = "1148304823989575840";
-
 const client = new Discord.Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -143,3 +141,4 @@ require('./dashboard/server')
 
 client.login(TOKEN);
 console.log("LOGGED IN!")
+module.exports = client;

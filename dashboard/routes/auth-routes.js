@@ -5,6 +5,9 @@ const authClient = require ('../auth-client')
 dotenv.config();
 const CLIENTID = process.env.CLIENTID;
 
+router.get('/invite', (req, res) => 
+    res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${CLIENTID}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fdashboard&scope=bot`))
+
 router.get('/login', (req, res) =>
     res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${CLIENTID}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth&scope=identify+guilds`))
 

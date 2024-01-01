@@ -1,4 +1,12 @@
-#sidebar.float-left.bg-light
+#sidebar.float-start.bg-light
     a(href='/dashboard')
         .icon.round.shadow
             img.round(alt=user.username, src=user.avatarUrl(64))
+    hr
+    each guild in guilds
+        a(href='/servers' + guild.id)
+            .icon.round.shadow
+                img.round(alt=guild.name, src=guild.iconUrl({size: 64, dynamic: true}))
+    a(href='/invite')
+        .icon.round.shadow
+                p.abbr.text-success.text-center #[i.fas.fa-plus]

@@ -1,12 +1,21 @@
 const authClient = require('./auth-client')
-const client = require('./server')
+const dotenv = require("dotenv");
+const { Client, GatewayIntentBits} = require('discord.js')
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildVoiceStates
+    ]
+});
+dotenv.config();
+TOKEN = process.env.TOKEN;
+client.login(TOKEN);
 
 module.exports.updateGuilds = async (req, res, next) => {
     try {
         const key = res.cookies.get('key')
         if(key) {
             const authGuilds = await authClient.getGuilds(key)
-            console.log(authGuilds)
             res.locals.guilds = getManageableGuilds(authGuilds)
         } 
     } finally {
@@ -28,11 +37,23 @@ module.exports.validateUser = async (req, res, next) => {
     res.locals.user ? next() : res.render('errors/401')
 }
 
-function getManageableGuilds(authGuilds) { // need to implement the client object into this, so i can use discord.js for the guilds, it contains way more information!
+function getManageableGuilds(authGuilds) {
+    const guilds = []
+    for (const id of authGuilds.keys()) {
+        const isManager = authGuilds
+        .get(id).permissions
+        .includes('MANAGE_GUILD');
+        const guild = client.guilds.cache.get(id);
+        if(!guild || !isManager) continue;
+        guilds.push(guild);
+    }
+    return guilds
+}
+/* without using discord.js
+function getManageableGuilds(authGuilds) {
     const guilds = []
     for(const guild of authGuilds.values()){
         if(guild && guild.permissions && guild.permissions.includes('MANAGE_GUILD')){
-            const guildJS = client.guilds.cache.get(guild._id)
             guilds.push(guild)
         }
         else {
@@ -41,3 +62,4 @@ function getManageableGuilds(authGuilds) { // need to implement the client objec
     }
     return guilds;
 }
+*/

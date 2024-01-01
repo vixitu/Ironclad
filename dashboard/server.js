@@ -5,7 +5,6 @@ const rootRoutes = require('./routes/root-routes')
 const cookies = require('cookies')
 const app = express()
 const middleware = require('./middleware')
-const client = require('../main')
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'pug')
@@ -21,7 +20,6 @@ app.use('/',
     authRoutes, middleware.validateUser, middleware.updateGuilds, dashboardRoutes)
 
 app.get('*', (req, res) => res.render('errors/404'))
-
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server is live on port ${port}`))
 

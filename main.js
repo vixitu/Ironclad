@@ -1,9 +1,8 @@
-const Discord = require("discord.js");
 const dotenv = require("dotenv");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
-const { GatewayIntentBits } = require("discord.js");
+const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const { MongoClient } = require('mongodb');
 
 dotenv.config();
@@ -11,7 +10,7 @@ const TOKEN = process.env.TOKEN;
 const DATABASETOKEN = process.env.DATABASETOKEN;
 
 const CLIENT_ID = "1148304823989575840";
-const client = new Discord.Client({
+const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildVoiceStates
@@ -21,14 +20,15 @@ const client = new Discord.Client({
 const dbClient = new MongoClient(DATABASETOKEN, { useNewUrlParser: true, useUnifiedTopology: true });
 module.exports = { dbClient };
 
-client.slashcommands = new Discord.Collection();
+
+client.commands = new Collection();
 
 let commands = [];
 
 const slashFiles = fs.readdirSync("./slash").filter(file => file.endsWith(".js"));
 for (const file of slashFiles) {
     const slashcmd = require(`./slash/${file}`);
-    client.slashcommands.set(slashcmd.data.name, slashcmd);
+    client.commands.set(slashcmd.data.name, slashcmd);
     commands.push(slashcmd.data.toJSON());
 }
 
@@ -129,7 +129,7 @@ client.on("interactionCreate", (interaction) => {
     async function handleCommand() {
         if (!interaction.isCommand()) return;
 
-        const slashcmd = client.slashcommands.get(interaction.commandName);
+        const slashcmd = client.commands.get(interaction.commandName);
         if (!slashcmd) interaction.reply("Not a valid slash command");
 
         await interaction.deferReply();

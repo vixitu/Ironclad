@@ -60,6 +60,10 @@
     opacity: 0;
 }
 
+#sidebarExtension h4 {
+    cursor: pointer;
+}
+
 /* tabs */
 .tabs a {
     margin: 2px 10px;

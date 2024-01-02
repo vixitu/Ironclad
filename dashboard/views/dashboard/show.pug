@@ -1,5 +1,6 @@
 include ../includes/header.pug
 script(src='/js/sidebar.js', defer)
+script(src='/js/guild.js', defer)
 link(rel='stylesheet', href='/css/sidebar.css')
 body
     include ../includes/sidebar.pug
@@ -14,10 +15,13 @@ body
             h4.pt-2 #{guild.name}
         .tabs.navbar-nav
             .category Modules
-            a(href='#') #[i.fas.fa-gavel.pe-1.text-muted] Hosting
-            a(href='#') #[i.fa-solid.fa-music.pe-1.text-muted] Music
-            a(href='#') #[i.fa-solid.fa-question.pe-2.text-muted] Others
+            a#hosting.cursor-pointer #[i.fas.fa-gavel.pe-1.text-muted] Hosting
+            a#music.cursor-pointer #[i.fa-solid.fa-music.pe-1.text-muted] Music
+            a#others.cursor-pointer #[i.fa-solid.fa-question.pe-2.text-muted] Others
 
     include ../includes/navbar.pug
-    .jumbotron.text-center.bg-transparent
-        h1.display-3 #{guild.name}
+
+    include modules/overview
+    include modules/hosting
+    include modules/music
+    include modules/others

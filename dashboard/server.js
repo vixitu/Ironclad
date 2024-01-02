@@ -4,7 +4,7 @@ const dashboardRoutes = require('./routes/dashboard-routes')
 const rootRoutes = require('./routes/root-routes')
 const cookies = require('cookies')
 const app = express()
-const middleware = require('./middleware')
+const middleware = require('./modules/middleware')
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'pug')

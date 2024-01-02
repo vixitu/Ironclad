@@ -4,8 +4,8 @@
             img.round(alt=user.username, src=user.avatarUrl(64))
     hr
     each guild in guilds
-        a(href='/servers' + guild.id)
-            .icon.round.shadow
+        a(href='/servers/' + guild.id)
+            .icon.round.shadow(data-toggle='tooltip', data-placement='right', title=guild.name).my-2
                 if guild.icon
                     img.round(alt=guild.name, src=guild.iconURL({size: 64, dynamic: true}))
                 else
@@ -13,3 +13,6 @@
     a(href='/invite')
         .icon.round.shadow
                 p.abbr.text-success.text-center #[i.fas.fa-plus]
+
+    .hamburger 
+        i.fas.fa-bars

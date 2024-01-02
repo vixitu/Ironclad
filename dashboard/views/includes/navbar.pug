@@ -17,17 +17,12 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-primary.bg-gradient
         .navbar-nav.ms-auto
             if user
                 .dropdown.me-2
-                    .dropdown-toggle(type='button', data-bs-toggle='dropdown', aria-expanded='false')
+                    .dropdown-toggle(type='button', data-bs-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                         img.user-avatar.round(src=user.avatarUrl(32))
                         span.ps-2 #{user.username}
                         .dropdown-menu
                             a.dropdown-item(href='/dashboard') Dashboard
                             hr
-                            a.nav-link(href='/dashboard')
-                                i.fa-brands.fa-discord
-                                span.px-1
-                                    img.user-avatar
-                                    span #{user.username}
                             a.dropdown-item(href='/logout')
                                 i.fa-solid.fa-arrow-right-to-bracket
                                 span.px-1 Logout

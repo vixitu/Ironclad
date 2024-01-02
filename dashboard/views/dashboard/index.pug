@@ -2,6 +2,16 @@ include ../includes/header.pug
 link(rel='stylesheet', href='/css/sidebar.css')
 body
     include ../includes/sidebar.pug
+    
+
+    #sidebarExtension.bg-light
+        header.text-center.pt-4
+            .large-icon.bg-white.round 
+                img.round(src=user.avatarUrl(128), alt=user.username)
+            h4.pt-2 #{user.username}
+                span.text-muted #{'#' + user.discriminator.toString().padStart(4, '0')}
+
+
     include ../includes/navbar.pug
     |
     .container.jumbotron.text-center

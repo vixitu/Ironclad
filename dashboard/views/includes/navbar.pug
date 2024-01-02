@@ -21,7 +21,8 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-primary.bg-gradient
                         img.user-avatar.round(src=user.avatarUrl(32))
                         span.ps-2 #{user.username}
                         .dropdown-menu
-                            a.dropdown-item(href='/dashboard') Dashboard
+                            a.dropdown-item(href='/dashboard')
+                                span Dashboard
                             hr
                             a.dropdown-item(href='/logout')
                                 i.fa-solid.fa-arrow-right-to-bracket

@@ -1,25 +1,25 @@
 section#overviewModule.module.px-5
     .form-group.mt-5
         .row.text-center
-            .col-3 
+            .col-lg-3.col-md-6 
                 .border.rounded.m-3.p-3
                     p.uppercase
                         i.fas.fa-user-ninja
-                        strong.ms-1 Owner ID
-                    p.ms-0 #{guild.ownerId}
-            .col-3 
+                        strong.ms-1 Owner
+                    p.ms-0 #{ownerName}
+            .col-lg-3.col-md-6 
                 .border.rounded.m-3.p-3
                     p.uppercase
                         i.fas.fa-user-alt
                         strong.ms-1 Members
                     p.ms-0 #{guild.memberCount}
-            .col-3  
+            .col-lg-3.col-md-6  
                 .border.rounded.m-3.p-3
                     p.uppercase
                         i.fas.fa-at
                         strong.ms-1 Roles
                     p.ms-0 #{guild.roles.cache.size}
-            .col-3  
+            .col-lg-3.col-md-6  
                 .border.rounded.m-3.p-3
                     p.uppercase
                         i.fas.fa-hashtag

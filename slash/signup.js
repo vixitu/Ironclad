@@ -70,7 +70,7 @@ module.exports = {
           }
       } else {
         if(userReservation){
-            await interaction.editReply(`You have already reserved ${userReservation.countryName}. You cannot pick multiple.`);
+            await interaction.editReply(`You have already reserved ${userReservation.countryName}. You cannot pick multiple. Use Co-op command instead.`);
             console.log(`${userID} tried to take ${countryToSignUp} but he already took ${userReservation.countryName}.`)
         } else {
             // Reserve the country in the database

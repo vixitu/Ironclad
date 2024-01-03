@@ -1,4 +1,6 @@
+const bodyParser = require('body-parser')
 const express = require('express')
+const methodOverride = require('method-override')
 const authRoutes = require('./routes/auth-routes')
 const dashboardRoutes = require('./routes/dashboard-routes')
 const rootRoutes = require('./routes/root-routes')
@@ -8,6 +10,9 @@ const middleware = require('./modules/middleware')
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'pug')
+
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(methodOverride('_method'))
 
 app.use(cookies.express('a', 'b', 'c'))
 
@@ -19,7 +24,7 @@ app.use('/',
     rootRoutes,
     authRoutes, middleware.validateUser, middleware.updateGuilds, dashboardRoutes)
 
-app.get('*', (req, res) => res.render('errors/404'))
+app.all('*', (req, res) => res.render('errors/404'))
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server is live on port ${port}`))
 

@@ -127,6 +127,7 @@ client.on("ready", async () => {
 
 client.on("interactionCreate", (interaction) => {
     async function handleCommand() {
+
         if (!interaction.isCommand()) return;
 
         const slashcmd = client.commands.get(interaction.commandName);

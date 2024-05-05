@@ -14,8 +14,13 @@ module.exports = {
         
         isHostingCol = await collection.findOne({isHosting: true})
         if(isHostingCol){
-            await reservationCollection.deleteMany({isReserved: true})
-            await collection.findOneAndDelete({isHosting: true})
+            try{
+                await collection.findOneAndReplace({isHosting: true}, {isHosting: false, hostingTime: null, hostOwner: null})
+                await reservationCollection.deleteMany({})
+            } catch (error) {
+                console.log(error)
+            }
+            
             await interaction.editReply({
                 embeds: [new EmbedBuilder()
                 .setThumbnail(interaction.user.displayAvatarURL())

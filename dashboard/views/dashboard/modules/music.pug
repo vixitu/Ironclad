@@ -1,5 +1,30 @@
 section#musicModule.module.container.px-5
-    .jumbotron.bg-transparent.pb-0
-        h1.display-4.text-center Music
-    .form-group.mt-5
-        .row
+.jumbotron.bg-transparent.pb-0
+  h1.display-4.text-center Music
+
+.queue-container.mt-5
+  .border.rounded.m-3.p-3
+    .queue-header
+      i.fa-solid.fa-headphones.me-2
+      strong Songs
+
+    .queue-list
+      ul.list-group
+        each song in songData
+          li.list-group-item.d-flex.justify-content-between.align-items-center
+            .song-info
+              span.fw-bold= song.songName
+              span.text-muted.ms-2=song.songAuthor
+            .song-duration
+              if song.songDuration
+                span.text-muted= (song.songDuration)
+              else
+                span.text-muted (Duration unavailable)
+script(src="../../assets/js/music-functions.js", defer)
+.controls.m-3.p-3
+    button(type="button" class="btn btn-sm btn-light me-2" onclick=`pauseSong`)
+      i.fa-solid.fa-pause
+    button(type="button" class="btn btn-sm btn-light me-2" onclick="playSong()")
+      i.fa-solid.fa-play
+    button(type="button" class="button btn-sm btn-light" onclick="nextSong()")
+      i.fa-solid.fa-forward 

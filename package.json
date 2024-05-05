@@ -1,14 +1,17 @@
 {
   "dependencies": {
+    "@discordjs/opus": "^0.9.0",
     "@discordjs/rest": "^2.0.1",
     "body-parser": "^1.20.2",
     "consolidate": "^1.0.3",
     "cookies": "^0.9.0",
     "disco-oauth": "^5.1.1",
+    "discord-player": "^6.6.7",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
+    "ffmpeg-static": "^5.2.0",
     "fs": "^0.0.1-security",
     "fuse.js": "^7.0.0",
     "jquery": "^3.7.1",
@@ -17,6 +20,7 @@
     "mongoose": "^7.5.0",
     "pug": "^3.0.2",
     "quick.db": "^9.1.7",
-    "quickdb": "^1.0.5"
+    "quickdb": "^1.0.5",
+    "ytdl-core": "^4.11.5"
   }
 }

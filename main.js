@@ -4,6 +4,7 @@ const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const { MongoClient } = require('mongodb');
+const { Player, QueryType } = require ("discord-player")
 
 dotenv.config();
 const TOKEN = process.env.TOKEN;
@@ -46,6 +47,14 @@ for (const file of slashFiles) {
     }
 })();
 
+client.player = new Player(client, {
+    ytdlOptions: {
+        quality: "highestaudio",
+        highWaterMark: 1 << 25
+    }
+})
+client.player.extractors.loadDefault();
+
 client.on("ready", async () => {
     console.log(`Logged in as ${client.user.tag}`);
     // Retrieve all guilds the bot is in
@@ -58,6 +67,7 @@ client.on("ready", async () => {
         const serverDB = dbClient.db("PanzerDB");
         const collectionName = `reservedCountries_${guild.id}`;
         const hostInfoCollectionName = `hostInfo_${guild.id}`;
+        const musicCollectionName = `music_${guild.id}`;
         const configCollection = serverDB.collection(`configInfo`)
 
         try {
@@ -82,6 +92,17 @@ client.on("ready", async () => {
             if (!hostInfoCollectionExists) {
                 await serverDB.createCollection(hostInfoCollectionName);
                 console.log(`Collection '${hostInfoCollectionName}' created for server ${guild.name}`);
+            }
+
+            // Check if the music collection exists
+            const musicCollectionExists = await serverDB
+                .listCollections({ name: musicCollectionName })
+                .hasNext();
+
+            // Create the music collection if it doesn't exist
+            if (!musicCollectionExists) {
+                await serverDB.createCollection(musicCollectionName);
+                console.log(`Collection '${musicCollectionName}' created for server ${guild.name}`);
             }
 
             const configCollectionExists = await configCollection.findOne({serverID: guild.id})
@@ -125,7 +146,53 @@ client.on("ready", async () => {
 
 });
 
-client.on("interactionCreate", (interaction) => {
+client.on("interactionCreate", async (interaction) => {
+    if(interaction.isAutocomplete()){
+        if(interaction.commandName === 'play'){
+            const focusedValue = interaction.options.getFocused();
+            const query = focusedValue;
+            const suggestions = await getSongSuggestions(query)
+            await interaction.respond(
+                suggestions.slice(0, 25).map(track => ({
+                    name: track.title,
+                    value: track.title,
+                }))
+            )
+            console.log(suggestions)
+        }
+        if(interaction.commandName === 'lyrics'){
+            const focusedValue = interaction.options.getFocused();
+            const query = focusedValue;
+            const suggestions = await getSongSuggestions(query)
+            await interaction.respond(
+                suggestions.slice(0, 25).map(track => ({
+                    name: track.title,
+                    value: track.title,
+                }))
+            )
+            console.log(suggestions)
+        }
+    }
+    async function getSongSuggestions(query){
+        try{
+            const results = await client.player.search(query, {
+                requestedBy: interaction.user,
+                searchEngine: QueryType.YOUTUBE_SEARCH
+            })
+        
+            if (results.tracks.length === 0){
+                console.log('no suggestions found')
+                return [];
+            }
+        
+            return results.tracks
+        } catch (error) {
+            console.error('Error fetching song suggestions:', error);
+            return []; // Return an empty array in case of errors
+        }
+        
+    }
+
     async function handleCommand() {
 
         if (!interaction.isCommand()) return;

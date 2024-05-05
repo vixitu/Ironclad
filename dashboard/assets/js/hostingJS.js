@@ -14,8 +14,6 @@ TOKEN = process.env.TOKEN;
 client.login(TOKEN);
 
 
-
-
 module.exports.gameHostedTF = async(id) => {
     yes = 'True'
     no = 'False'
@@ -62,6 +60,12 @@ module.exports.getReservations = async(id) => {
     const formattedReservations = await Promise.all(
         reservations.map(async (reservation) => {
           // Step 2a: Fetch Discord user
+          if(reservation.userWhoReserved === null) {
+            return {
+                countryName: reservation.countryName,
+                userName: 'N/A',
+              };
+          }
           const user = await client.users.fetch(reservation.userWhoReserved);
           
           // Step 2b: Return formatted reservation

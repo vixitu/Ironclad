@@ -14,7 +14,7 @@ module.exports = {
         .addStringOption((option) =>
           option.setName("country").setDescription("Please choose one").setRequired(true).addChoices(
             { name: 'Germany', value: 'Germany :flag_de:' },
-            { name: 'Soviet Union', value: 'Soviet Union <:sovietunion:1025151634071883786>' },
+            { name: 'Soviet Union', value: 'Soviet Union :flag_ru:' },
             { name: 'United States', value: 'United States :flag_us:' },
             { name: 'United Kingdom', value: 'United Kingdom :flag_gb:' },
             { name: 'British Raj', value: 'British Raj :flag_in:' },
@@ -30,12 +30,12 @@ module.exports = {
             { name: 'Romania', value: 'Romania :flag_ro:' },
             { name: 'Brazil', value: 'Brazil :flag_br:' },
             { name: 'Sweden', value: 'Sweden :flag_se:' },
-            { name: 'Greece', value: 'Greece <:flag_kgr:1148355753829216266>' },
+            { name: 'Greece', value: 'Greece :flag_gr:' },
             { name: 'Canada', value: 'Canada :flag_ca:' },
             { name: 'Australia', value: 'Australia :flag_au:' },
             { name: 'Netherlands', value: 'Netherlands :flag_nl:' },
             { name: 'Czechoslovakia', value: 'Czechoslovakia :flag_cz:' },
-            { name: 'Yugoslavia', value: 'Yugoslavia <:flag_yu:1148355331676700753>' },
+            { name: 'Yugoslavia', value: 'Yugoslavia :flag_rs' },
             { name: 'Norway', value: 'Norway :flag_no:' },
             { name: 'Finland', value: 'Finland :flag_fi:' }
           )
@@ -47,13 +47,13 @@ module.exports = {
     const countryToSignUp = interaction.options.getString("country");
     const userID = interaction.user.id; // Get the user's ID
     const isHostingCol = db.collection(`hostInfo_${serverID}`)
-    const isHostingValue = isHostingCol.findOne({isHosting: false})
+    const isHostingValue = isHostingCol.findOne({isHosting: true})
     if(!isHostingValue){
         await interaction.editReply("There is no game being hosted right now!")
         return
     }
       // Check if the selected country is already reserved by any user in the database
-      const existingReservation = await collection.findOne({ countryName: countryToSignUp });
+      const existingReservation = await collection.findOne({ displayName: countryToSignUp });
       const userReservation = await collection.findOne({userWhoReserved : userID})
 
       if (existingReservation) {
@@ -62,13 +62,13 @@ module.exports = {
               console.log(`${userID} tried to coop ${countryToSignUp} but he already took ${existingReservation.countryName}.`)
           } else {
               if (userReservation) {
-                  await interaction.editReply(`You have already reserved ${userReservation.countryName}. You cannot pick multiple.`);
+                  await interaction.editReply(`You have already reserved ${userReservation.displayName}. You cannot pick multiple.`);
                   console.log(`${userID} tried to take ${countryToSignUp} but he already took ${userReservation.countryName}.`)
               } else {
                   // Fetch the username from Discord based on the userWhoReserved ID
                   const user = client.users.cache.get(existingReservation.userWhoReserved);
                   const reservedByUserName = user ? user.toString() : "Unknown User";
-                  await interaction.editReply(`You are now co-oping ${existingReservation.countryName} together with ${reservedByUserName}.`);
+                  await interaction.editReply(`You are now co-oping ${existingReservation.displayName} together with ${reservedByUserName}.`);
                   const update = {
                       $set: {
                           userCOOP: userID, // Replace with the user ID you want to set

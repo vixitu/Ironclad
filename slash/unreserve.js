@@ -23,17 +23,22 @@ module.exports = {
 
       if (existingReservation) {
           if (existingReservation.userWhoReserved === userID) {
-              await interaction.editReply(`Succesfully unreserved ${existingReservation.countryName}`);
+              await interaction.editReply(`Succesfully unreserved ${existingReservation.displayName}`);
               console.log(`${userID} unreserved${existingReservation.countryName}.`)
-              await collection.deleteOne(existingReservation)
+              await collection.updateOne(existingReservation, {
+                $set: {
+                  isReserved: false,
+                  userWhoReserved: null
+                  }
+                })
           }
       } else {
           if (existingCOOPReservation) {
               await interaction.editReply(`Succesfully unreserved ${existingCOOPReservation.countryName} (coop)`);
-              console.log(`${userID} unreserved${existingCOOPReservation.countryName}.`)
+              console.log(`${userID} unreserved ${existingCOOPReservation.countryName}.`)
               const update = {
-                  $unset: {
-                      userCOOP: userID // The value doesn't matter
+                  $set: {
+                      userCOOP: null
                   }
               }
               await collection.updateOne(existingCOOPReservation, update)

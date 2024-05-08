@@ -5,6 +5,7 @@ const fs = require("fs");
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const { MongoClient } = require('mongodb');
 const { Player, QueryType } = require ("discord-player")
+const express = require('express')
 
 dotenv.config();
 const TOKEN = process.env.TOKEN;
@@ -17,6 +18,10 @@ const client = new Client({
         GatewayIntentBits.GuildVoiceStates
     ]
 });
+
+const app = express()
+const PORT = 8000
+app.listen(PORT, () => console.log('server online on PORT ' + PORT))
 
 const dbClient = new MongoClient(DATABASETOKEN, { useNewUrlParser: true, useUnifiedTopology: true });
 module.exports = { dbClient };
@@ -59,6 +64,7 @@ client.on("ready", async () => {
     console.log(`Logged in as ${client.user.tag}`);
     // Retrieve all guilds the bot is in
     const guilds = client.guilds.cache;
+    
     
 
     // Loop through each guild and create a collection if it doesn't exist
@@ -209,5 +215,5 @@ client.on("interactionCreate", async (interaction) => {
 
 client.login(TOKEN);
 require('./dashboard/server')
-module.exports = client;
+module.exports = client, app;
 console.log("LOGGED IN!")

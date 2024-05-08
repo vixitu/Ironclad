@@ -26,7 +26,7 @@ app.use('/',
 
 app.all('*', (req, res) => res.render('errors/404'))
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Server is live on port ${port}`))
+app.listen(port, () => console.log(`DASHBOARD: Server is live on port ${port}`))
 
 
 

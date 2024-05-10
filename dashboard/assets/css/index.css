@@ -1,6 +1,7 @@
 :root {
     --colorprimary: #517EE1;
     --colorsecondary: #FFE640;
+    --purple: #A45AFF;
     --black: #1e2124;
 }
 
@@ -8,10 +9,6 @@
 
 
     .jumbotron {
-        background-image: url('https://i.imgur.com/T1Hj5c6.jpeg');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
         color: black;
     }
 
@@ -63,26 +60,132 @@
 
     .gridContainer{
         display: grid;
-        max-width: 30vw;
-        margin-left: 60vw;
-        margin-right: 10vw;
-        margin-top: -30vh;
-        text-align: left;
-        background-color: rgba(30,33,36, 0.65);
-        border-radius: 20px;
+        width: 100%;
+        height: 100vh;
     }
-    .gridContainer h1{
+    .cards{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 1200px;
+        flex-wrap: wrap;
+        z-index: 1;
+        margin: auto;
+        margin-top: -30vh;
+    }
+
+    .cards .card{
+        position: relative;
+        width: 280px;
+        height: 400px;
+        margin: 30px;
+        box-shadow: 20px 20px 50px rgba(0, 0,0 ,0.5);
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+        border-left: 1px solid rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .cards .card .content{
+        padding: 20px;
+        text-align: center;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: 0.5s;
+    }
+
+    #hoi4::before{
+        content: "";
+        background-image: url('https://steamuserimages-a.akamaihd.net/ugc/1558765964098544392/EA79174990441B16C68214A2406925DE488AE2EB/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false');
+        background-size: cover;
+        background-position: center;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.2;
+    }
+    #music::before{
+        content: "";
+        background-image: url('https://media.npr.org/assets/img/2010/11/11/vietnam_wide-cda3df0a1be23fdab09ff9f7a2dc83893feb2d90.jpg?s=1000');
+        background-size: cover;
+        background-position: center;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.2;
+    }
+    #history::before{
+        content: "";
+        background-image: url('https://www1.wellesley.edu/albright/sites/www.wellesley.edu.albright/files/styles/large/public/field/image/Image-for-VD-post_smaller.jpg?itok=CxzOi_GV');
+        background-size: cover;
+        background-position: center;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.2;
+    }
+
+    .cards .card:hover .content{
+        transform: translateY(0px);
+        opacity: 1;
+    }
+
+    .cards .card .content h2{
+        position: absolute;
+        top: -40px;
+        right: 30px;
+        font-size: 8em;
+        color: rgba(255, 255, 255, 0.05);
+        pointer-events: none;
+    }
+    .cards .card .content h3{
+        font-size: 1.8em;
+        font-weight: 600;
+        color: #fff;
+        z-index: 1;
+    }
+    .cards .card .content p{
+        font-size: 1em;
+        color: #fff;
+        font-weight: 300;
+    }
+    .cards .card .content a{
+        position: relative;
+        display: inline-block;
+        padding: 8px 20px;
+        margin-top: 15px;
+        background: var(--colorprimary);
+        color: #fff;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 500;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+    .cards h1{
         color: var(--colorprimary);
         font-weight: 700;
         font-size: 2.5rem;
     }
     .gridContainer #features{
+        padding-top: 1rem;
         text-align: center;
         color: var(--colorsecondary);
         font-weight: 700;
         font-size: 3.5rem;
     }
-    .gridContainer span{
+    .cards span{
         color: white;
     }
 
@@ -106,17 +209,21 @@
     }
 
     body {
-        overflow-y: hidden;
         font-family: proxima-nova,sans-serif,Helvetica,arial,sans-serif;
+        background-image: url('https://i.imgur.com/T1Hj5c6.jpeg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    body::-webkit-scrollbar{
+        display: none;
     }
 }
 
 @media(max-width: 1099px){
     .jumbotron {
-        background-image: url('https://i.imgur.com/T1Hj5c6.jpeg');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
         color: black;
     }
 
@@ -164,6 +271,90 @@
         height: 100vh;
     }
 
+
+    .cards{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 1200px;
+        flex-wrap: wrap;
+        z-index: 1;
+        margin: auto;
+    }
+
+    .cards .card{
+        position: relative;
+        width: 140px;
+        height: 200px;
+        margin: 15px;
+        box-shadow: 10px 10px 20px rgba(0, 0,0 ,0.5);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+        border-left: 1px solid rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .cards .card .content{
+        padding: 10px;
+        text-align: center;
+    }
+
+    .cards .card .content h2{
+        position: absolute;
+        top: -20px;
+        right: 15px;
+        font-size: 4em;
+        color: rgba(255, 255, 255, 0.05);
+        pointer-events: none;
+    }
+    .cards .card .content h3{
+        font-size: 1em;
+        font-weight: 600;
+        color: #fff;
+        z-index: 1;
+    }
+    .cards .card .content p{
+        font-size: 0.51em;
+        color: #fff;
+        font-weight: 300;
+    }
+    .cards .card .content a{
+        position: relative;
+        display: inline-block;
+        padding: 4px 10px;
+        margin-top: 7px;
+        background: var(--colorprimary);
+        color: #fff;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 500;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+    .cards .card .content a span{
+        font-size: 0.6em;
+    }
+    .cards h1{
+        color: var(--colorprimary);
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+    .gridContainer #features{
+        padding-top: 1rem;
+        text-align: center;
+        color: var(--colorsecondary);
+        font-weight: 700;
+        font-size: 3.5rem;
+    }
+    .cards span{
+        color: white;
+    }
+
     #dcButton{
         background-color: var(--colorprimary);
         color: white;
@@ -184,7 +375,10 @@
     }
 
     body {
-        overflow-y: hidden;
+        background-image: url('https://i.imgur.com/T1Hj5c6.jpeg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
         font-family: proxima-nova,sans-serif,Helvetica,arial,sans-serif;
     }
 }

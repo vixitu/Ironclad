@@ -1,5 +1,11 @@
 
 .navbar-custom {
-    background-color: var(--colorprimary);
+    background-color: var(--purple);
+    background: linear-gradient(to right, var(--colorprimary), var(--purple));
 }
 
+@media(min-width: 1099px){
+    .dropdown:hover .dropdown-menu{
+        display:block;
+    }
+}

@@ -9,10 +9,10 @@ module.exports = {
 
     const listEmbed = new EmbedBuilder()
         .setColor("#FF0000")
-        .setTitle('Panzer Bot Information')
-        .setURL('https://discord.gg/XKpSkcWm5X')
+        .setTitle('Ironclad Information')
+        .setURL('http://ironclad.ddns.net:3000/')
         .setAuthor({ name: 'vixitu', iconURL: 'https://cdn.discordapp.com/avatars/306361580533317632/cab119fc4431858ea095538128a44ad8.webp?size=32', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })
-        .setDescription('This is my amazing HOI4 bot, please enjoy and if you need help you can contact mr Vixitu.')
+        .setDescription('This is my amazing HOI4 bot, please enjoy and if you need help you can contact mr Vixitu. Also make sure to check out [the website.](http://ironclad.ddns.net:3000/)')
         .setThumbnail('https://i.imgur.com/NUbOdy1.jpg')
         .addFields(
             { name: '/Host', value: 'This command is used for hosting.', inline: true },

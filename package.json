@@ -27,6 +27,7 @@
     "quickdb": "^1.0.5",
     "serpapi": "^2.1.0",
     "unsplash-js": "^7.0.19",
+    "vanilla-tilt": "^1.8.1",
     "ytdl-core": "^4.11.5"
   }
 }

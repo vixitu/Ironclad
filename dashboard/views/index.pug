@@ -1,5 +1,6 @@
 include includes/header.pug
 link(rel='stylesheet', href='/css/index.css')
+script(type="text/javascript", src="vanilla-tilt.js")
 body
     include includes/navbar.pug
     .jumbotron.text-start.bg-hero-image
@@ -12,21 +13,42 @@ body
                 i.fa-brands.fa-discord
                 span.px-2 Add to Discord
               a.btn(href='/dashboard', id="dashButton") Go to the Dashboard
-        .gridContainer
-            h1(id="features") Features. 
-            .row.row-cols-2
-                .col
-                    h1 HOI4
-                    span Get access to commands with features used to start a game and let player reserve countries on Discord.
-                .col
-                    h1 Music
-                    span Play your favorite music using the feature-rich commands, that allow you to play any music you want along with other useful music-related things.
-                .col
-                    h1 Quotes
-                    span Get your own random quotes, or request a specific one based on category or author.
-                .col
-                    h1 History
-                    span Receive your daily history facts.
+    .gridContainer
+        h1(id="features") Features. 
+        .cards
+          .card(id="hoi4")
+            .content
+              h2 01
+              h3 HOI4
+              p Get access to commands with features used to start a game and let player reserve countries on Discord.
+              a(href='/invite')
+                i.fa-brands.fa-discord
+                span.px-2 Try it Yourself
+          .card(id="music")
+            .content
+              h2 02
+              h3 Music
+              p Play your favorite music using the feature-rich commands, that allow you to play any music you want along with other useful music-related things.
+              a(href='/invite')
+                i.fa-brands.fa-discord
+                span.px-2 Try it Yourself
+          .card(id="history")
+            .content
+              h2 03
+              h3 History
+              p Receive your daily history facts, or go more philosopher-style and study some quotes.
+              a(href='/invite')
+                i.fa-brands.fa-discord
+                span.px-2 Try it Yourself
+                                
+    
+    script.
+      VanillaTilt.init(document.querySelectorAll(".card"), {
+      max: 25,
+      speed: 400,
+      glare: true,
+      "max-glare": 1,
+      });
 script.
   var typed = new Typed('#typedText', {
   strings: ['HOI4 Events.', 'Music.', 'Quotes.', 'History.'],
@@ -34,4 +56,4 @@ script.
   backSpeed: 80,
   loop: true
   });
-
+  

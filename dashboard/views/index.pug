@@ -2,8 +2,36 @@ include includes/header.pug
 link(rel='stylesheet', href='/css/index.css')
 body
     include includes/navbar.pug
-    .jumbotron.text-center.bg-hero-image
-        img(src='https://i.imgur.com/PytKyDa.png', alt='Panzer Bot').mt-5
-        h1.display-4 Discord bot. Made for HOI4.
-        a.btn.btn-primary.mx-1(href='/invite') Add
-        a.btn.btn-dark.mx-1(href='/dashboard') Dashboard
+    .jumbotron.text-start.bg-hero-image
+        .heading-container
+            h1 Ironclad, the Discord bot built for 
+              span(id="typedText")
+            p Supercharge your HOI4 games & more! Ironclad is a feature-packed Discord bot which streamlines HOI4 event hosting and offers a toolbox for all your server needs.
+            .button-container
+              a.btn(href='/invite', id="dcButton")
+                i.fa-brands.fa-discord
+                span.px-2 Add to Discord
+              a.btn(href='/dashboard', id="dashButton") Go to the Dashboard
+        .gridContainer
+            h1(id="features") Features. 
+            .row.row-cols-2
+                .col
+                    h1 HOI4
+                    span Get access to commands with features used to start a game and let player reserve countries on Discord.
+                .col
+                    h1 Music
+                    span Play your favorite music using the feature-rich commands, that allow you to play any music you want along with other useful music-related things.
+                .col
+                    h1 Quotes
+                    span Get your own random quotes, or request a specific one based on category or author.
+                .col
+                    h1 History
+                    span Receive your daily history facts.
+script.
+  var typed = new Typed('#typedText', {
+  strings: ['HOI4 Events.', 'Music.', 'Quotes.', 'History.'],
+  typeSpeed: 145,
+  backSpeed: 80,
+  loop: true
+  });
+

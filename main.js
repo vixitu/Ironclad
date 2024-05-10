@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
-const { Client, GatewayIntentBits, Collection } = require("discord.js");
+const { Client, GatewayIntentBits, Collection, ActivityType } = require("discord.js");
 const { MongoClient } = require('mongodb');
 const { Player, QueryType } = require ("discord-player")
 const express = require('express')
@@ -21,9 +21,9 @@ const client = new Client({
 
 const app = express()
 const PORT = 8000
-app.listen(PORT, () => console.log('server online on PORT ' + PORT))
+app.listen(PORT, () => console.log('EXPRESS: server online on PORT ' + PORT))
 
-const dbClient = new MongoClient(DATABASETOKEN, { useNewUrlParser: true, useUnifiedTopology: true });
+const dbClient = new MongoClient(DATABASETOKEN);
 module.exports = { dbClient };
 
 
@@ -38,19 +38,8 @@ for (const file of slashFiles) {
     commands.push(slashcmd.data.toJSON());
 }
 
-(async () => {
-    try {
-        await dbClient.connect();
-        console.log('Connected to MongoDB');
 
-        // Now you can perform database operations using "dbClient.db('databaseName')"
 
-        // Example: Insert a document into a collection
-        const db = dbClient.db('PanzerDB');
-    } catch (error) {
-        console.error('Error connecting to MongoDB:', error);
-    }
-})();
 
 client.player = new Player(client, {
     ytdlOptions: {
@@ -62,10 +51,28 @@ client.player.extractors.loadDefault();
 
 client.on("ready", async () => {
     console.log(`Logged in as ${client.user.tag}`);
+    
+
     // Retrieve all guilds the bot is in
     const guilds = client.guilds.cache;
     
+    async function connect(){
+        try {
+            await dbClient.connect();
     
+            await listDatabases(dbClient);
+        } catch (error) {
+            console.error('Error connecting to MongoDB:', error);
+        }
+    }
+    
+    connect();
+    async function listDatabases(dbClient) {
+        databasesList = await dbClient.db().admin().listDatabases();
+    
+        console.log("Databases:");
+        databasesList.databases.forEach(db => console.log(` - ${db.name}`));
+    };
 
     // Loop through each guild and create a collection if it doesn't exist
     for (const guild of guilds.values()) {
@@ -147,7 +154,28 @@ client.on("ready", async () => {
             console.error(`Error deploying slash commands for server ${guild.name}:`, err);
         }
     }
-    
+
+    function generateRandomNumber(maxLimit){
+        let rand = Math.random() * maxLimit;
+        rand = Math.floor(rand);
+        return rand
+    }
+
+    activityList = [
+        'the Fall of the Western Roman Empire',
+        'the Library of Alexandria Burn',
+        'the Battle of Hastings',
+        'Hamlet',
+        'the Final Days of WWII',
+        'the Russian Revolution',
+        'the Louisiana Purchase',
+        'the American Civil war',
+        'the Battle of Cannae',
+        'the Battle of Stalingrad'
+    ]
+
+    client.user.setPresence({ activities: [{ name: activityList[generateRandomNumber(activityList.length)], type: ActivityType.Watching }], status: 'online' }); 
+
     console.log("Successfully loaded");
 
 });

@@ -1,17 +1,191 @@
-.jumbotron {
-    background-image: url('https://i.redd.it/m4k36yqiwa681.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: black;
+:root {
+    --colorprimary: #517EE1;
+    --colorsecondary: #FFE640;
+    --black: #1e2124;
 }
 
-.bg-hero-image {
-    position: relative;
-    height: 100vh;
+@media(min-width: 1100px){
+
+
+    .jumbotron {
+        background-image: url('https://i.imgur.com/T1Hj5c6.jpeg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: black;
+    }
+
+    .jumbotron .heading-container{
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+        padding-top: 16rem;
+        padding-bottom: 9rem;
+        margin-left: 5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 580px;
+        max-height: 50%;
+        width: 100%;
+        text-align: left;
+    }
+
+    .heading-container h1 {
+        font-weight: 700;
+        font-size: 3.5rem;
+        line-height: 4rem;
+        color: white;
+    }
+    .heading-container p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+        color: white;
+        margin-top: .2rem;
+        margin-bottom: 1rem;
+    }
+    .button-container {
+        justify-content: flex-start !important;
+        max-width: none !important;
+        flex-direction: row !important;
+        display: flex !important;
+        gap: 1rem !important;
+    }
+
+    .heading-container #typedText{
+        color: var(--colorsecondary);
+    }
+
+
+    .bg-hero-image {
+        position: relative;
+        height: 100vh;
+    }
+
+    .gridContainer{
+        display: grid;
+        max-width: 30vw;
+        margin-left: 60vw;
+        margin-right: 10vw;
+        margin-top: -30vh;
+        text-align: left;
+        background-color: rgba(30,33,36, 0.65);
+        border-radius: 20px;
+    }
+    .gridContainer h1{
+        color: var(--colorprimary);
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+    .gridContainer #features{
+        text-align: center;
+        color: var(--colorsecondary);
+        font-weight: 700;
+        font-size: 3.5rem;
+    }
+    .gridContainer span{
+        color: white;
+    }
+
+    #dcButton{
+        background-color: var(--colorprimary);
+        color: white;
+    }
+    
+    #dcButton:hover{
+        background-color: #3B65B4;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    #dashButton{
+        background-color: var(--black);
+        color: white;
+    }
+    #dashButton:hover{
+        background-color: #181b1e;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+        overflow-y: hidden;
+        font-family: proxima-nova,sans-serif,Helvetica,arial,sans-serif;
+    }
 }
 
-body {
-    overflow-y: hidden;
+@media(max-width: 1099px){
+    .jumbotron {
+        background-image: url('https://i.imgur.com/T1Hj5c6.jpeg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: black;
+    }
+
+    .jumbotron .heading-container{
+        padding-top: 15vh;
+        padding-bottom: 40vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        text-align: left;
+    }
+
+    .heading-container h1 {
+        padding-left: 4vw;
+        padding-right: 3vw;
+        font-weight: 700;
+        font-size: 2.75rem;
+        line-height: 3rem;
+        color: white;
+    }
+    .heading-container p {
+        font-size: 0.8rem;
+        line-height: 1.5em;
+        color: white;
+        margin-top: .2rem;
+        margin-bottom: 1rem;
+    }
+    .button-container {
+        justify-content: flex-start !important;
+        max-width: none !important;
+        flex-direction: row !important;
+        display: flex !important;
+        gap: 1rem !important;
+    }
+
+    .heading-container #typedText{
+        color: var(--colorsecondary);
+    }
+
+
+    .bg-hero-image {
+        position: relative;
+        height: 100vh;
+    }
+
+    #dcButton{
+        background-color: var(--colorprimary);
+        color: white;
+    }
+    
+    #dcButton:hover{
+        background-color: #3B65B4;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    #dashButton{
+        background-color: var(--black);
+        color: white;
+    }
+    #dashButton:hover{
+        background-color: #181b1e;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+        overflow-y: hidden;
+        font-family: proxima-nova,sans-serif,Helvetica,arial,sans-serif;
+    }
 }
 

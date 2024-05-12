@@ -6,6 +6,8 @@ const { Client, GatewayIntentBits, Collection, ActivityType } = require("discord
 const { MongoClient } = require('mongodb');
 const { Player, QueryType } = require ("discord-player")
 const express = require('express')
+const { createServer } = require('node:http')
+const { Server } = require('socket.io')
 
 dotenv.config();
 const TOKEN = process.env.TOKEN;
@@ -20,8 +22,10 @@ const client = new Client({
 });
 
 const app = express()
+const server = createServer(app)
+const io = new Server(server)
 const PORT = 8000
-app.listen(PORT, () => console.log('EXPRESS: server online on PORT ' + PORT))
+server.listen(PORT, () => console.log('EXPRESS: server online on PORT ' + PORT))
 
 const dbClient = new MongoClient(DATABASETOKEN);
 module.exports = { dbClient };
@@ -38,6 +42,68 @@ for (const file of slashFiles) {
     commands.push(slashcmd.data.toJSON());
 }
 
+io.on('connection', (socket) => {
+    console.log('BOT: a user connnected');
+    socket.on('pause', (id, callback) => {
+        console.log('RECEIVED PAUSE COMMAND FROM SERVER: ' + id)
+            const guild = client.guilds.cache.get(id)
+            const queue = client.player.nodes.get(guild)
+            if(!queue){
+                console.log("There isn't even anything playing you scizophrenic mfer.")
+                return
+            }
+            queue.node.setPaused(true);
+            callback({
+                status: "ok"
+            })
+            console.log("The queue is paused now. You are welcome.");
+    })
+    socket.on('play', (id, callback) => {
+        console.log('RECEIVED PLAY COMMAND FROM SERVER: ' + id)
+            const guild = client.guilds.cache.get(id)
+            const queue = client.player.nodes.get(guild)
+            if(!queue){
+                console.log("There isn't even anything playing you scizophrenic mfer.")
+                return
+            }
+            queue.node.setPaused(false);
+            callback({
+                status: "ok"
+            })
+            console.log("The queue is playing now. You are welcome.");
+    })
+    socket.on('next', (id, callback) => {
+        console.log('RECEIVED SKIP COMMAND FROM SERVER: ' + id)
+            const guild = client.guilds.cache.get(id)
+            const queue = client.player.nodes.get(guild)
+            if(!queue){
+                console.log("There isn't even anything playing you scizophrenic mfer.")
+                return
+            }
+            queue.node.skip();
+            const currentSong = queue.node.queue.currentTrack
+            callback({
+                status: "ok",
+                title: currentSong.title
+            })
+            console.log("The song is skipped now. You are welcome.");
+    })
+    socket.on('getCurrent', (id, callback) => {
+        console.log('RECEIVED REQUEST TO GET CURRENT SONG FROM SERVER: ' + id)
+            const guild = client.guilds.cache.get(id)
+            const queue = client.player.nodes.get(guild)
+            if(!queue){
+                console.log("There isn't even anything playing you scizophrenic mfer.")
+                return
+            }
+            const currentSong = queue.node.queue.currentTrack
+            callback({
+                status: "ok",
+                title: currentSong.title
+            })
+            console.log("Sent currentSong data. " + callback);
+    })
+})
 
 
 

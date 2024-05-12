@@ -3,22 +3,25 @@ link(rel='stylesheet', href='../css/navbar.css')
 nav.navbar.navbar-expand-lg.navbar-dark.navbar-custom
   .container-fluid
     a.navbar-brand(href='/#')
-        img(src="https://i.imgur.com/xtdOtAH.jpeg", alt="", width="40", height="40")
-        span.px-2 Ironclad
+        img(src="https://i.imgur.com/xtdOtAH.jpeg", alt="", width="40", height="40", id='brandLogo')
+        span(id='brandName').px-2 Ironclad
     button.navbar-toggler(type='button', data-bs-toggle='collapse', data-bs-target='#navbar', aria-controls='navbar', aria-expanded='false', aria-label='Toggle navigation')
       span.navbar-toggler-icon
     #navbar.collapse.navbar-collapse
+        .navbar-nav(id='navnav')
+            li.nav-item(id='navitem')
+                a.nav-link(href='/commands' id='nav-link')
+                    i.fas.fa-code
+                    span.px-1 Commands
+            li.nav-item(id='navitem')
+                a.nav-link(href='/reservations' id='nav-link')
+                    i.fa-solid.fa-globe
+                    span.px-1 Reserved Countries
+            li.nav-item(id='navitem')
+                a.nav-link(href='/config' id='nav-link')
+                    i.fa-solid.fa-gear
+                    span.px-1 Configuration
         .navbar-nav
-            a.nav-link(href='/commands')
-                i.fas.fa-code
-                span.px-1 Commands
-            a.nav-link(href='/reservations')
-                i.fa-solid.fa-globe
-                span.px-1 Reserved Countries
-            a.nav-link(href='/config')
-                i.fa-solid.fa-gear
-                span.px-1 Configuration
-        .navbar-nav.ms-auto
             if user
                 .dropdown.me-2
                     .dropdown-toggle(type='button', data-bs-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
@@ -32,6 +35,10 @@ nav.navbar.navbar-expand-lg.navbar-dark.navbar-custom
                                 i.fa-solid.fa-arrow-right-to-bracket
                                 span.px-1 Logout
             else
-                a.nav-link(href='/login')
+                a.btn(href='/invite', id="navDcButton")
                     i.fa-brands.fa-discord
-                    span.px-1 Login
+                    span.px-1 Add to Discord
+                a(href='/login')
+                    button.btn.btn-outline-dark.mx-2(href='/login' id='loginButton')
+                        i.fa-brands.fa-discord
+                        span.px-1 Login

@@ -1,4 +1,4 @@
-const { dbClient } = require('../../../main');
+const { dbClient } = require('../../../main.js');
 const db = dbClient.db('PanzerDB')
 
 const dotenv = require("dotenv");

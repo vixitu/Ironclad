@@ -14,7 +14,7 @@ module.exports = {
         interaction.reply("There isn't even anything playing you scizophrenic mfer.")
         return
     }
-    queue.setPaused(false)
+    queue.node.setPaused(false)
 
     await interaction.editReply("The queue is playing again now. You are welcome.");
     

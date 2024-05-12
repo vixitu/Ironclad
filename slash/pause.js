@@ -7,14 +7,14 @@ module.exports = {
     .setName("pause")
     .setDescription("Pauses the queue."),
   run: async ({ client, interaction }) => {
-    
-    const queue = await client.player.nodes.get(interaction.guild)
 
+    const queue = await client.player.nodes.get(interaction.guild)
+    console.log(queue)
     if(!queue){
         interaction.reply("There isn't even anything playing you scizophrenic mfer.")
         return
     }
-    queue.isPaused(true)
+    queue.node.setPaused(true);
 
     await interaction.editReply("The queue is paused now. You are welcome.");
     

@@ -1,53 +1,56 @@
-section#hostingModule.module.container.px-5
-    form(action='/servers/' + guild.id + '/hosting?_method=PUT', method='POST')
-        .jumbotron.bg-transparent.pb-0.text-center
-            h1.display-4.text-center Hosting
-        .form-group.mt-5
-            .row
-                .col-4 
-                    .border.rounded.m-3.p-3
-                        p.uppercase
-                            i.fas.fa-user-alt
-                            strong.ms-1 Game Info
-                        ol.list-group
-                            li.list-group-item.d-flex.justify-content-between.align-items-start
-                                .fw-bold Active Game?
-                                |       #{isHosted}
-                            li.list-group-item.d-flex.justify-content-between.align-items-start
-                                .fw-bold Host
-                                |       #{host}
-                            li.list-group-item.d-flex.justify-content-between.align-items-start
-                                .fw-bold Time
-                                |       #{time}
-
-                .col-4
-                    .border.rounded.m-3.p-3
-                        p.uppercase
-                            i.fas.fa-user-alt
-                            strong.ms-1 HOI4 Multiplayer Role
-                            select.form-control(name='hoi4role', multiple)
-                                each role of Array.from(guild.roles.cache.values())
-                                    option #{role.name}
-                .col-4 
-                    .border.rounded.m-3.p-3
-                        p.uppercase
-                            i.fas.fa-user-alt
-                            strong.ms-1 Blacklisted Channels
-                        p.ms-0 TODO
-        if isHosted == yes
+link(rel='stylesheet', href='../css/hosting.css')
+script(type='text/javascript', src='../js/hostingReservations.js')
+body
+    section#hostingModule.module.container.px-5
+        form(action='/servers/' + guild.id + '/hosting?_method=PUT', method='POST')
+            .jumbotron.bg-transparent.pb-0.text-center
+                h1.display-4.text-center Hosting
             .form-group.mt-5
                 .row
-                    .col-12 
+                    .col-4 
                         .border.rounded.m-3.p-3
                             p.uppercase
-                                i.fa-solid.fa-globe
-                                strong.ms-1 Reservations
-                            form#reservationsForm
-                                ol.list-group
-                                    each reservation in reservations
-                                        li.list-group-item.d-flex.justify-content-between.align-items-start
-                                            span.fw-bold= reservation.countryName
-                                            div
-                                                input.form-control(type='text', placeholder='User Name', value=reservation.userName)
-                                                button.btn.btn-primary(type='button', onclick='deleteReservation(this)') Delete
-                            button.btn.btn-success(type='button', onclick='saveChanges()') Save Changes
+                                i.fas.fa-user-alt
+                                strong.ms-1 Game Info
+                            ol.list-group
+                                li.list-group-item.d-flex.justify-content-between.align-items-start
+                                    .fw-bold Active Game?
+                                    |       #{isHosted}
+                                li.list-group-item.d-flex.justify-content-between.align-items-start
+                                    .fw-bold Host
+                                    |       #{host}
+                                li.list-group-item.d-flex.justify-content-between.align-items-start
+                                    .fw-bold Time
+                                    |       #{time}
+
+                    .col-4
+                        .border.rounded.m-3.p-3
+                            p.uppercase
+                                i.fas.fa-user-alt
+                                strong.ms-1 HOI4 Multiplayer Role
+                                select.form-control(name='hoi4role', multiple)
+                                    each role of Array.from(guild.roles.cache.values())
+                                        option #{role.name}
+                    .col-4 
+                        .border.rounded.m-3.p-3
+                            p.uppercase
+                                i.fas.fa-user-alt
+                                strong.ms-1 Blacklisted Channels
+                            p.ms-0 TODO
+            if isHosted == yes
+                .form-group.mt-5
+                    .row
+                        .col-12 
+                            .border.rounded.m-3.p-3
+                                p.uppercase
+                                    i.fa-solid.fa-globe
+                                    strong.ms-1 Reservations
+                                form#reservationsForm
+                                    ol.list-group
+                                        each reservation in reservations
+                                            li.list-group-item.d-flex.justify-content-between.align-items-start
+                                                span.fw-bold= reservation.countryName
+                                                div
+                                                    input.form-control(type='text', placeholder='User Name', value=reservation.userName)
+                                                    button.btn(type='button', onclick='saveReservation(this);', id='saveButton') Save
+                                                    button.btn(type='button', onclick='deleteReservation(this);', id='deleteButton') Delete

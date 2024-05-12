@@ -1,3 +1,17 @@
+:root {
+    --colorprimary: #517EE1;
+    --colorsecondary: #FFE640;
+    --yellowdeep: #FFD600;
+    --purple: #A45AFF;
+    --lightgreen: #5cb85c;
+    --green: #4a934a;
+    --hardgreen: #408140;
+    --darkgreen: #376E37;
+    --black: #1e2124;
+    --offwhite: #f5f5f5;
+    --blue: #0084F5;
+    --darkblue: #0077D0;
+}
 body {
     overflow-x: hidden;
     font-family: proxima-nova,sans-serif,Helvetica,arial,sans-serif;

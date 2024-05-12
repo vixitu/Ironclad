@@ -1,31 +1,95 @@
-section#musicModule.module.container.px-5
-  form(action='/servers/' + guild.id + '/music?_method=PUT', method='POST')
-    .jumbotron.bg-transparent.pb-0
-      h1.display-4.text-center Music
+link(rel='stylesheet', href='../css/music.css')
+script(src="/socket.io/socket.io.js")
+body
+  section#musicModule.module.container.px-5
+    form(action='/servers/' + guild.id + '/music?_method=PUT', method='POST')
+      .jumbotron.bg-transparent.pb-0
+        h1.display-4.text-center Music
+      .current-container
+        h3 Currently playing:
+        span(id='currentSong')
+      .queue-container.mt-5
+        .border.rounded.m-3.p-3
+          .queue-header
+            i.fa-solid.fa-headphones.me-2
+            strong Songs
+            h1(id='_guildid')=guildID
 
-    .queue-container.mt-5
-      .border.rounded.m-3.p-3
-        .queue-header
-          i.fa-solid.fa-headphones.me-2
-          strong Songs
+          .queue-list
+            ul.list-group
+              each song in songData
+                li.list-group-item.d-flex.justify-content-between.align-items-center
+                  .song-info
+                    span.fw-bold= song.songName
+                    span.text-muted.ms-2=song.songAuthor
+                  .song-duration
+                    if song.songDuration
+                      span.text-muted= (song.songDuration)
+                    else
+                      span.text-muted (Duration unavailable)
+      .controls.m-3.p-3
+          button(type="button" class="btn btn-sm btn-light me-2" onclick=`pauseSong()`)
+            i.fa-solid.fa-pause
+          button(type="button" class="btn btn-sm btn-light me-2" onclick="playSong()")
+            i.fa-solid.fa-play
+          button(type="button" class="button btn-sm btn-light" onclick="nextSong()")
+            i.fa-solid.fa-forward 
+      .alert.hide(id='alert')
+        i.fas.fa-exclamation-circle
+        span.msg.px-2(id='text') Success: Command executed succesfully.
+        span.close-btn
+          span.fas.fa-times
+  script.
+    const socket = io();
+    function getCurrent(guildID){
+      socket.emit('getCurrent', document.getElementById("_guildid").textContent, (response) =>{
+        console.log(response)
+        if(response.status === 'ok'){
+          var span = document.getElementById('currentSong')
+          span.textContent=response.currentTitle
 
-        .queue-list
-          ul.list-group
-            each song in songData
-              li.list-group-item.d-flex.justify-content-between.align-items-center
-                .song-info
-                  span.fw-bold= song.songName
-                  span.text-muted.ms-2=song.songAuthor
-                .song-duration
-                  if song.songDuration
-                    span.text-muted= (song.songDuration)
-                  else
-                    span.text-muted (Duration unavailable)
-    script(src="../../assets/js/music-functions.js", defer)
-    .controls.m-3.p-3
-        button(type="button" class="btn btn-sm btn-light me-2" onclick=`pauseSong`)
-          i.fa-solid.fa-pause
-        button(type="button" class="btn btn-sm btn-light me-2" onclick="playSong()")
-          i.fa-solid.fa-play
-        button(type="button" class="button btn-sm btn-light" onclick="nextSong()")
-          i.fa-solid.fa-forward 
+        }
+      })
+    }
+    getCurrent();
+    
+    function pauseSong(guildID){
+      socket.emit('pause cmd', document.getElementById("_guildid").textContent, (response) =>{
+        console.log(response)
+        if(response.status === 'ok'){
+          var alert = document.getElementById('alert');
+          alert.classList.replace("hide", "show")
+          setTimeout(function(){
+            alert.classList.replace("show", "hide")
+          }, 5000)
+        }
+      })
+    }
+    function playSong(){
+      socket.emit('play cmd', document.getElementById("_guildid").textContent, (response) =>{
+        console.log(response)
+        if(response.status === 'ok'){
+          var alert = document.getElementById('alert');
+          alert.classList.replace("hide", "show")
+          setTimeout(function(){
+            alert.classList.replace("show", "hide")
+          }, 5000)
+        }
+      })
+    }
+    function nextSong(){
+      socket.emit('next cmd', document.getElementById("_guildid").textContent, (response) =>{
+        console.log(response)
+        if(response.status === 'ok'){
+          var alert = document.getElementById('alert');
+          var text = document.getElementById('text');
+          text.textContent="Success: skipped " + response.title
+          alert.classList.replace("hide", "show")
+          setTimeout(function(){
+            alert.classList.replace("show", "hide")
+            text.textContent="Success: Command executed succesfully."
+          }, 3000)
+        }
+      })
+    }
+    

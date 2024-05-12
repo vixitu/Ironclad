@@ -1,0 +1,10 @@
+#saveButton{
+    background-color: var(--colorprimary);
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 8px;
+}
+#deleteButton{
+    background-color: var(--colorsecondary);
+    margin-top: 8px;
+}

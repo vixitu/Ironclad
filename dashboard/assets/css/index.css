@@ -3,6 +3,8 @@
     --colorsecondary: #FFE640;
     --purple: #A45AFF;
     --black: #1e2124;
+    --blue: #0084F5;
+    --darkblue: #0077D0;
 }
 
 @media(min-width: 1100px){
@@ -47,6 +49,27 @@
         display: flex !important;
         gap: 1rem !important;
     }
+
+    #dcButton{
+        margin-right: 15px;
+        border-radius: 20px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        font-weight: 500;
+        height: 120%;
+        min-width: 200px;
+        font-weight: bold;
+        background: linear-gradient(to right, var(--darkblue), var(--blue));
+    }
+    #dashButton{
+        border-radius: 20px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        font-weight: 500;
+        height: 120%;
+        min-width: 200px;
+        font-weight: bold;
+        background-color: black;
+    }
+
 
     .heading-container #typedText{
         color: var(--colorsecondary);
@@ -184,6 +207,14 @@
         color: var(--colorsecondary);
         font-weight: 700;
         font-size: 3.5rem;
+    }
+    .gridContainer #features::after{
+        content: '';
+        width: 540px;
+        height: 6px;
+        background: var(--colorprimary);
+        display: block;
+        margin: auto;
     }
     .cards span{
         color: white;

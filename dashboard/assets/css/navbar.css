@@ -4,6 +4,46 @@
     background: linear-gradient(to right, var(--colorprimary), var(--purple));
 }
 
+#navnav{
+    margin-left: auto;
+    margin-right: auto;
+}
+#navitem::after{
+    content: '';
+    width: 0%;
+    height: 2px;
+    background: var(--colorsecondary);
+    display: block;
+    margin: auto;
+    transition: 0.5s;
+}
+#navitem:hover::after{
+    width: 80%;
+}
+
+#brandName{
+    color: white;
+}
+
+#brandLogo{
+    border-radius: 15px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    transition: 0.2s ease-in-out;
+}
+#brandLogo:hover{
+    transform: scale(1.1);
+}
+
+#navDcButton{
+    border-radius: 20px;
+    color: white;
+    background: linear-gradient(to right, var(--darkblue), var(--blue));
+}
+#loginButton{
+    border-radius: 20px;
+    margin-left: 8px;
+    margin-right: 20px;
+}
 @media(min-width: 1099px){
     .dropdown:hover .dropdown-menu{
         display:block;

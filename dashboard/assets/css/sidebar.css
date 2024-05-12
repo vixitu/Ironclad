@@ -88,3 +88,18 @@
 .tabs .category:hover {
     color: black;
 }
+
+/* blockquote */
+#dashboardWelcome{
+    align-content: center;
+    margin-top: 25px;
+}
+#dashboardWelcome h1{
+    font-weight: 700;
+    font-size: 3.5rem;
+    line-height: 4rem;
+    color: black;
+}
+body{
+    font-family: proxima-nova,sans-serif,Helvetica,arial,sans-serif;
+}

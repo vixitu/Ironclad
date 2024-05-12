@@ -14,8 +14,8 @@ module.exports = {
         interaction.reply("There isn't even anything playing you scizophrenic mfer.")
         return
     }
-    const currentSong = queue.current
-    queue.skip()
+    const currentSong = queue.node.queue.currentTrack
+    queue.node.skip()
 
     const embed = new EmbedBuilder()
         .setColor("#FF0000")

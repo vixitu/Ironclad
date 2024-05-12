@@ -14,7 +14,7 @@ const express = require('express');
 const { validateGuild } = require("../modules/middleware");
 const { gameHostedTF, findHost, findTime, getReservations } = require("../assets/js/hostingJS");
 const { songDatas } = require('../assets/js/musicData')
-const { getOwnerDisplay } = require("../assets/js/overviewJS");
+const { getOwnerDisplay, getGuild } = require("../assets/js/overviewJS");
 const router = express.Router()
 
 router.get('/dashboard', (req, res) => res.render('dashboard/index', {subtitle: 'Dashboard'}))
@@ -26,6 +26,7 @@ router.get(`/servers/:id`, validateGuild, async (req, res) => res.render('dashbo
     time: await findTime(req.params.id),
     reservations: await getReservations(req.params.id),
     ownerName: await getOwnerDisplay(req.params.id),
+    guildID: await getGuild(req.params.id),
     subtitle: 'Dashboard'
 }));
 

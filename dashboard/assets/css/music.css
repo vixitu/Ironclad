@@ -14,7 +14,18 @@
 #buttonCntrl i {
     color: var(--colorsecondary);
 }
+#songsearchgroup{
+    max-width: 300px;
+    display: flex;
+    flex-direction: row;
+}
 
+#plusbtn {
+    margin-left: 5px;
+    border-color: green;
+    border-width: 2px;
+    color: green;
+}
 .alert{
     background: var(--lightgreen);
     padding: 20px 40px;

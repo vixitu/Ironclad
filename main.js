@@ -8,6 +8,7 @@ const { Player, QueryType } = require ("discord-player")
 const express = require('express')
 const { createServer } = require('node:http')
 const { Server } = require('socket.io')
+const { YoutubeExtractor } = require('@discord-player/extractor')
 
 dotenv.config();
 const TOKEN = process.env.TOKEN;
@@ -112,12 +113,42 @@ io.on('connection', (socket) => {
                 return
             }
             const currentSong = queue.node.queue.currentTrack
+            if(!currentSong){
+                return
+            }
             callback({
                 status: "ok",
                 title: currentSong.title
             })
             console.log("Sent currentSong data. " + callback);
     })
+    socket.on('addSong', (id, input, callback) => addSongFun(id, input, callback))
+
+    async function addSongFun(id, input, callback) {
+        console.log('RECEIVED ADDSONG COMMAND FROM SERVER: ' + id)
+        client.player.extractors.register(YoutubeExtractor)
+        const guild = client.guilds.cache.get(id)
+        const queue = await client.player.nodes.create(guild)
+        if(!queue){
+            console.log("There isn't even anything playing you scizophrenic mfer.")
+            return
+        } // Also socket send the logged in user id on the dashboard to let bot join their channel
+        const result = await client.player.search(input, {
+            requestedBy: 'dashboardUser',
+            searchEngine: QueryType.YOUTUBE_SEARCH
+        })
+    
+        if (result.tracks.length === 0){
+            console.log('no results found')
+            return
+        }
+        const song = result.tracks[0]
+        queue.addTrack(song)
+        callback({
+            status: "ok"
+        })
+        console.log("The song has been added: " + song.title);
+    }
 })
 
 
@@ -263,30 +294,35 @@ client.on("ready", async () => {
 
 client.on("interactionCreate", async (interaction) => {
     if(interaction.isAutocomplete()){
-        if(interaction.commandName === 'play'){
-            const focusedValue = interaction.options.getFocused();
-            const query = focusedValue;
-            const suggestions = await getSongSuggestions(query)
-            await interaction.respond(
-                suggestions.slice(0, 25).map(track => ({
-                    name: track.title,
-                    value: track.title,
-                }))
-            )
-            console.log(suggestions)
+        try{
+            if(interaction.commandName === 'play'){
+                const focusedValue = interaction.options.getFocused();
+                const query = focusedValue;
+                const suggestions = await getSongSuggestions(query)
+                await interaction.respond(
+                    suggestions.slice(0, 25).map(track => ({
+                        name: track.title,
+                        value: track.title,
+                    }))
+                )
+                console.log(suggestions)
+            }
+            if(interaction.commandName === 'lyrics'){
+                const focusedValue = interaction.options.getFocused();
+                const query = focusedValue;
+                const suggestions = await getSongSuggestions(query)
+                await interaction.respond(
+                    suggestions.slice(0, 25).map(track => ({
+                        name: track.title,
+                        value: track.title,
+                    }))
+                )
+                console.log(suggestions)
+            }
+        } catch (e){
+            console.error(e)
         }
-        if(interaction.commandName === 'lyrics'){
-            const focusedValue = interaction.options.getFocused();
-            const query = focusedValue;
-            const suggestions = await getSongSuggestions(query)
-            await interaction.respond(
-                suggestions.slice(0, 25).map(track => ({
-                    name: track.title,
-                    value: track.title,
-                }))
-            )
-            console.log(suggestions)
-        }
+        
     }
     async function getSongSuggestions(query){
         try{

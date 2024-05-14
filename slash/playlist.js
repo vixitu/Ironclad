@@ -6,8 +6,8 @@ const { dbClient } = require('../main.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("play")
-    .setDescription("Plays a song.")
+    .setName("playlist")
+    .setDescription("Plays a playlist.")
     .addStringOption(option =>
 		option.setName('searchterm')
 			.setDescription('The input to search for!')

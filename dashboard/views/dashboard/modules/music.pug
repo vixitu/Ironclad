@@ -13,8 +13,12 @@ body
           .queue-header
             i.fa-solid.fa-headphones.me-2
             strong Songs
+            .form-group(id='songsearchgroup')
+              input(type='text' class='form-control' name='f2' id='f2' placeholder='Add a song!')
+              button.btn(onclick="addSong()" id='plusbtn')
+                i.fa-solid.fa-plus
             h1(id='_guildid')=guildID
-            .queue-list
+            .queue-list.mt-3
                 ul.list-group
       .controls(id='buttonCntrl')
           button.btn(type="button" class="btn btn-sm btn-light mx-1" onclick=`pauseSong()`)
@@ -137,5 +141,23 @@ body
           }, 3000)
         }
       })
+    }
+    function addSong(){
+      const input = document.getElementById('f2')
+      socket.emit('addSong cmd', document.getElementById("_guildid").textContent, input.value, (response) =>{
+        console.log(response)
+        if(response.status === 'ok'){
+          var alert = document.getElementById('alert');
+          var text = document.getElementById('text');
+          text.textContent="Success: added song " + input.value
+          alert.classList.replace("hide", "show")
+          setTimeout(function(){
+            alert.classList.replace("show", "hide")
+            text.textContent="Success: Command executed succesfully."
+          }, 3000)
+        }
+      })
+      console.log(input.value)
+      input.value = '';
     }
     

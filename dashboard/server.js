@@ -99,6 +99,15 @@ io.on('connection', (socket) => {
             })
         })
     })
+    socket.on('addSong cmd', (id, input, callback) => {
+        console.log('RECEIVED ADDSONG COMMAND FROM CLIENT: ' + id + ' ' + input)
+        serverSocket.emit('addSong', id, input, (response) =>{
+            console.log(response.status)
+            callback({
+                status: response.status
+            })
+        })
+    })
 })
 
 const port = process.env.PORT || 3000;

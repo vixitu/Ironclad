@@ -14,33 +14,79 @@ body
             i.fa-solid.fa-headphones.me-2
             strong Songs
             h1(id='_guildid')=guildID
-
-          .queue-list
-            ul.list-group
-              each song in songData
-                li.list-group-item.d-flex.justify-content-between.align-items-center
-                  .song-info
-                    span.fw-bold= song.songName
-                    span.text-muted.ms-2=song.songAuthor
-                  .song-duration
-                    if song.songDuration
-                      span.text-muted= (song.songDuration)
-                    else
-                      span.text-muted (Duration unavailable)
-      .controls.m-3.p-3
-          button(type="button" class="btn btn-sm btn-light me-2" onclick=`pauseSong()`)
+            .queue-list
+                ul.list-group
+      .controls(id='buttonCntrl')
+          button.btn(type="button" class="btn btn-sm btn-light mx-1" onclick=`pauseSong()`)
             i.fa-solid.fa-pause
-          button(type="button" class="btn btn-sm btn-light me-2" onclick="playSong()")
+          button.btn(type="button" class="btn btn-sm btn-light mx-1" onclick="playSong()")
             i.fa-solid.fa-play
-          button(type="button" class="button btn-sm btn-light" onclick="nextSong()")
-            i.fa-solid.fa-forward 
+          button.btn(type="button" class="button btn-sm btn-light mx-1" onclick="nextSong()")
+            i.fa-solid.fa-forward
+          button.btn(type="button" class="button btn-sm btn-light mx-1" onclick="refreshQueue()")
+            i.fa-solid.fa-arrows-rotate  
       .alert.hide(id='alert')
         i.fas.fa-exclamation-circle
         span.msg.px-2(id='text') Success: Command executed succesfully.
         span.close-btn
           span.fas.fa-times
   script.
+    window.addEventListener('DOMContentLoaded', () => { refreshQueue(); });
+  script.
     const socket = io();
+    function updateSongList(songData) {
+      const songList = document.querySelector('.queue-list ul');  // Select the list element
+
+      // Clear existing list items before adding new ones
+      songList.innerHTML = ''; 
+
+      songData.forEach(song => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+
+        const songInfo = document.createElement('div');
+        songInfo.classList.add('song-info');
+
+        const songName = document.createElement('span');
+        songName.classList.add('fw-bold');
+        songName.textContent = song.title;
+
+        const songAuthor = document.createElement('span');
+        songAuthor.classList.add('text-muted', 'ms-2');
+        songAuthor.textContent = song.author || 'Unknown';  // Set default if author is missing
+
+        const songDuration = document.createElement('span');
+        songDuration.classList.add('text-muted');
+        songDuration.textContent = song.duration ? song.duration : '(Duration unavailable)';
+
+        songInfo.appendChild(songName);
+        songInfo.appendChild(songAuthor);
+        listItem.appendChild(songInfo);
+        listItem.appendChild(songDuration);
+
+        songList.appendChild(listItem);
+      });
+    }
+
+    function refreshQueue(guildID){
+      socket.emit('refreshQueue', document.getElementById("_guildid").textContent, (response) =>{
+        console.log(response)
+        if(response.status === 'ok'){
+          const songData = response.queue
+          console.log(songData)
+          updateSongList(songData);
+          getCurrent(document.getElementById("_guildid").textContent);
+          var alert = document.getElementById('alert');
+          var text = document.getElementById('text');
+          text.textContent="Success: refreshed the queue"
+          alert.classList.replace("hide", "show")
+          setTimeout(function(){
+            alert.classList.replace("show", "hide")
+            text.textContent="Success: Command executed succesfully."
+          }, 3000)
+        }
+      })
+    }
     function getCurrent(guildID){
       socket.emit('getCurrent', document.getElementById("_guildid").textContent, (response) =>{
         console.log(response)

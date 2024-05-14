@@ -1,3 +1,20 @@
+const { io } = require('socket.io.js')
+
+const socket = io();
+
+module.exports.songDatas = (guildID) => {
+  socket.emit('refreshQueue', document.getElementById("_guildid").textContent, (response) =>{
+    console.log(response)
+    if(response.status === 'ok'){
+      const songData = response.queue
+      console.log(songData)
+      return songData
+    }
+  })
+}
+
+/*
+
 const { dbClient } = require('../../../main.js');
 const db = dbClient.db('PanzerDB')
 
@@ -29,3 +46,4 @@ module.exports.songDatas = async(id) => {
     console.log(formattedSongs)
     return formattedSongs;
 };
+*/

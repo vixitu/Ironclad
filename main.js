@@ -44,6 +44,21 @@ for (const file of slashFiles) {
 
 io.on('connection', (socket) => {
     console.log('BOT: a user connnected');
+    socket.on('getQueue', (id, callback) => {
+        console.log('RECEIVED REQUEST TO GET QUEUE FROM SERVER: ' + id)
+            const guild = client.guilds.cache.get(id)
+            const queue = client.player.nodes.get(guild)
+            if(!queue){
+                console.log("There isn't even anything playing you scizophrenic mfer.")
+                return
+            }
+            const tracks = queue.node.queue.tracks.store
+            callback({
+                status: "ok",
+                queue: tracks
+            })
+            console.log("The queue is refreshed now. You are welcome.");
+    })
     socket.on('pause', (id, callback) => {
         console.log('RECEIVED PAUSE COMMAND FROM SERVER: ' + id)
             const guild = client.guilds.cache.get(id)

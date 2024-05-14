@@ -51,6 +51,16 @@ serverSocket.on('connect', () => {
 
 io.on('connection', (socket) => {
     console.log('SERVER: a user connnected');
+    socket.on('refreshQueue', (id, callback) => {
+        console.log('RECEIVED REQUEST TO GET QUEUE FROM CLIENT: ' + id)
+        serverSocket.emit('getQueue', id, (response) =>{
+            console.log(response)
+            callback({
+                status: response.status,
+                queue: response.queue
+            })
+        })
+    })
     socket.on('pause cmd', (id, callback) => {
         console.log('RECEIVED PAUSE COMMAND FROM CLIENT: ' + id)
         serverSocket.emit('pause', id, (response) =>{

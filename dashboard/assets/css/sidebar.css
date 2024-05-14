@@ -11,7 +11,12 @@
 }
 
 .abbr {
+    text-decoration: none;
+    margin: auto;
     padding-top: 7.5px;
+    padding-left: 7.5px;
+    padding-right: 7.5px;
+    padding-bottom: 7.5px;
 }
 
 .hamburger {

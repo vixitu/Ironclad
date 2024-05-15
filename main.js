@@ -18,6 +18,7 @@ const CLIENT_ID = "1148304823989575840";
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildVoiceStates
     ]
 });
@@ -122,6 +123,26 @@ io.on('connection', (socket) => {
             })
             console.log("Sent currentSong data. " + currentSong);
     })
+    socket.on('getMemb', (id, callback) => {members(id, callback)})
+    async function members(id, callback){
+        console.log('RECEIVED REQUEST TO GET ALL MEMBERS FROM SERVER: ' + id)
+        const guild = await client.guilds.cache.get(id)
+        const memberArray = [];
+        await guild.members.fetch().then(fetchedMembers => {
+            fetchedMembers.forEach(member => {
+                memberArray.push({
+                    username: member.user.username,
+                    id: member.user.id,
+                });
+            });
+        callback({
+            status: "ok",
+            members: memberArray
+        })
+        console.log("Member Array:", memberArray);
+        })
+        
+    }
     socket.on('saveRes', (countryName, username, id, callback) => {saveReservation(countryName, username, id, callback)})
     async function saveReservation(countryname, username, id, callback){
         console.log('RECEIVED SAVERES DATABASE COMMAND FROM SERVER: ' + id)

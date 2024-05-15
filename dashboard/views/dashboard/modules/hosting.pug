@@ -1,3 +1,4 @@
+link(rel='stylesheet', href='../css/main.css')
 link(rel='stylesheet', href='../css/hosting.css')
 script(type='text/javascript', src='../js/hostingReservations.js')
 script(src="/socket.io/socket.io.js")
@@ -53,9 +54,68 @@ body
                                             li.list-group-item.d-flex.justify-content-between.align-items-start
                                                 span.fw-bold(id='countryName')= reservation.countryName
                                                 div
-                                                    input.form-control(type='text', placeholder=reservation.userName, id=reservation.countryName)
+                                                    div.dropdown
+                                                        div.select
+                                                            span.selected=reservation.userName
+                                                            div.caret
+                                                        ul.menu(id='menuID')
+                                                            li.active=reservation.userName
                                                     button.btn(type='button', onclick=`saveReservation('${reservation.countryName}')`, id='saveButton') Save
                                                     button.btn(type='button', onclick='deleteReservation(this)', id='deleteButton') Delete
+    script.
+        window.addEventListener('DOMContentLoaded', () => { getMembers(document.getElementById("_guildid").textContent); });
+        function getMembers(guildid){
+            
+            socket.emit('getMembers', guildid, (response) =>{
+                console.log(response)
+                if(response.status === 'ok'){
+                    const membersArray = response.members
+                    console.log(membersArray)
+                    updateMemberDropdown(membersArray);
+                    // refresh list and throw a succes alert
+                }
+            })
+        }
+    script.
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            const select = dropdown.querySelector('.select')
+            const caret = dropdown.querySelector('.caret')
+            const menu = dropdown.querySelector('.menu')
+            const options = dropdown.querySelector('.menu li')
+            const selected = dropdown.querySelector('.selected')
+
+            select.addEvenListener('click', () => {
+                select.classList.toggle('select-clicked')
+                caret.classList.toggle('caret-rotate')
+                menu.classList.toggle('menu-open')
+            })
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    selected.innerText = option.innerText;
+                    select.classList.remove('select-clicked')
+                    caret.classList.remove('caret-rotate')
+                    menu.classList.remove('menu-open')
+                    options.forEach(option =>{
+                        option.classList.remove('active')
+                    })
+
+                    option.classList.add('active')
+                })
+            })
+        })
+    script.
+        function updateMemberDropdown(membersArray) {
+            const dropdown = document.getElementById('menuID');
+            dropdown.innerHTML = ''; // Clear existing options
+
+            membersArray.forEach(member => {
+            const option = document.createElement('li');
+            option.value = member.id;
+            option.textContent = member.username;
+            dropdown.appendChild(option);
+            });
+        }
     script.
         function saveReservation(name){
             const username = document.getElementById(name).value

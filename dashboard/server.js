@@ -99,6 +99,16 @@ io.on('connection', (socket) => {
             })
         })
     })
+    socket.on('getMembers', (id, callback) => {
+        console.log('RECEIVED REQUEST FROM CLIENT TO GET MEMBERS: ' + id)
+        serverSocket.emit('getMemb', id, (response) =>{
+            console.log(response.status)
+            callback({
+                status: response.status,
+                members: response.members
+            })
+        })
+    })
     socket.on('addSong cmd', (id, input, callback) => {
         console.log('RECEIVED ADDSONG COMMAND FROM CLIENT: ' + id + ' ' + input)
         serverSocket.emit('addSong', id, input, (response) =>{

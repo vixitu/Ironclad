@@ -120,7 +120,7 @@ io.on('connection', (socket) => {
                 status: "ok",
                 title: currentSong.title
             })
-            console.log("Sent currentSong data. " + callback);
+            console.log("Sent currentSong data. " + currentSong);
     })
     socket.on('addSong', (id, input, callback) => addSongFun(id, input, callback))
 

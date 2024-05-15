@@ -49,8 +49,16 @@ body
                                     ol.list-group
                                         each reservation in reservations
                                             li.list-group-item.d-flex.justify-content-between.align-items-start
-                                                span.fw-bold= reservation.countryName
+                                                span.fw-bold(id='countryName')= reservation.countryName
                                                 div
-                                                    input.form-control(type='text', placeholder='User Name', value=reservation.userName)
-                                                    button.btn(type='button', onclick='saveReservation(this);', id='saveButton') Save
-                                                    button.btn(type='button', onclick='deleteReservation(this);', id='deleteButton') Delete
+                                                    input.form-control(type='text', placeholder=reservation.userName, id=reservation.countryName)
+                                                    button.btn(type='button', onclick=`saveReservation('${reservation.countryName}')`, id='saveButton') Save
+                                                    button.btn(type='button', onclick='deleteReservation(this)', id='deleteButton') Delete
+    script.
+        function saveReservation(name){
+            const username = document.getElementById(name).value
+            console.log(name)
+            console.log(username)
+
+            // Send to mongodb to update!
+        }

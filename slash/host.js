@@ -55,16 +55,14 @@ module.exports = {
         if (isHostingCol) {
             await interaction.editReply("There is already a game being hosted, please end that one first!")
             console.log(`${userID} tried to host a game, but there is already one going on!`)
+            return
         } else {
             function insertCollectionReservations(value, key, map) {
                 try {
-                    reservedCollection.insertOne({
-                        countryName: key,
-                        displayName: value,
-                        isReserved: false,
-                        userWhoReserved: null,
-                        userCOOP: null,
-                        hasCOOP: null
+                    collection.insertOne({
+                        isHosting: true,
+                        hostingTime: null,
+                        hostOwner: interaction.user.id
                     });
                     console.log("Created reeservedCollection for " + key)
                 } catch (error) {

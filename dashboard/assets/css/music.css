@@ -22,9 +22,14 @@
 
 #plusbtn {
     margin-left: 5px;
-    border-color: green;
     border-width: 2px;
+    color: var(--colorprimary);
+    border-color: var(--colorprimary);
+}
+#plusbtn:hover{
     color: green;
+    border-color: green;
+    
 }
 .alert{
     background: var(--lightgreen);

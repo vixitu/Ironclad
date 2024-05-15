@@ -1,10 +1,12 @@
 link(rel='stylesheet', href='../css/hosting.css')
 script(type='text/javascript', src='../js/hostingReservations.js')
+script(src="/socket.io/socket.io.js")
 body
     section#hostingModule.module.container.px-5
         form(action='/servers/' + guild.id + '/hosting?_method=PUT', method='POST')
             .jumbotron.bg-transparent.pb-0.text-center
                 h1.display-4.text-center Hosting
+                h1(id='_guildid')=guildID
             .form-group.mt-5
                 .row
                     .col-4 
@@ -60,5 +62,15 @@ body
             console.log(name)
             console.log(username)
 
-            // Send to mongodb to update!
+            // Send to mongodb to update! + if status comes back ok, refresh the list! (check if status is ok by checking that it is a valid discord username, else throw an error alert!)
+            const socket = io();
+            function saveRes(name, username, guildid){
+                socket.emit('saveReservation', name, username, guildid, (response) =>{
+                    console.log(response)
+                    if(response.status === 'ok'){
+                        // refresh list and throw a succes alert
+                    }
+                })
+            }
+            saveRes(name, username, document.getElementById("_guildid").textContent)
         }

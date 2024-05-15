@@ -122,6 +122,26 @@ io.on('connection', (socket) => {
             })
             console.log("Sent currentSong data. " + currentSong);
     })
+    socket.on('saveRes', (countryName, username, id, callback) => {saveReservation(countryName, username, id, callback)})
+    async function saveReservation(countryname, username, id, callback){
+        console.log('RECEIVED SAVERES DATABASE COMMAND FROM SERVER: ' + id)
+        const serverDB = dbClient.db("PanzerDB");
+        const collection = `reservedCountries_${id}`;
+        
+
+        //get userid from username
+        await collection.findOneAndUpdate({countryName: countryname}, {
+            $set: {
+              isReserved: true,
+              userWhoReserved: userid
+              }
+            })
+        callback({
+            status: "ok"
+        })
+        console.log("The database has been updated. You are welcome.");
+        
+    }
     socket.on('addSong', (id, input, callback) => addSongFun(id, input, callback))
 
     async function addSongFun(id, input, callback) {

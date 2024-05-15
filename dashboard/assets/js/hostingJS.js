@@ -71,7 +71,7 @@ module.exports.getReservations = async(id) => {
           // Step 2b: Return formatted reservation
           return {
             countryName: reservation.countryName,
-            userName: user.username,
+            userName: user.username
           };
         })
       );

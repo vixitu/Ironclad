@@ -108,6 +108,15 @@ io.on('connection', (socket) => {
             })
         })
     })
+    socket.on('saveReservation', (countryName, username, id, callback) => {
+        console.log('RECEIVED SAVERESERVATION DATABASE COMMAND FROM CLIENT: ' + id + ' ' + countryName + ': ' + username)
+        serverSocket.emit('saveRes', countryName, username, id, (response) =>{
+            console.log(response.status)
+            callback({
+                status: response.status
+            })
+        })
+    })
 })
 
 const port = process.env.PORT || 3000;

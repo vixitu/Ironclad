@@ -1,8 +1,9 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { EmbedBuilder } = require("discord.js");
-const { QueryType } = require('discord-player')
+const { QueryType, useMainPlayer } = require('discord-player')
 const { YoutubeExtractor } = require('@discord-player/extractor')
 const { dbClient } = require('../main.js');
+const { YoutubeiExtractor } = require("discord-player-youtubei");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,8 +18,8 @@ module.exports = {
     const serverID = interaction.guildId
     const db = dbClient.db('PanzerDB')
     const collection = db.collection(`music_${serverID}`)
-
-    client.player.extractors.register(YoutubeExtractor)
+    const player = useMainPlayer();
+    player.extractors.register(YoutubeiExtractor, {});
 
     if(!interaction.member.voice.channel){
         await interaction.reply("You are not in a voice channel you dumb twat! :3")
@@ -30,13 +31,13 @@ module.exports = {
     if(!queue.connection) await queue.connect(interaction.member.voice.channel)
 
     let searchTerm = interaction.options.getString('searchterm');
-    const result = await client.player.search(searchTerm, {
+    const result = await player.search(searchTerm, {
         requestedBy: interaction.user,
         searchEngine: QueryType.YOUTUBE_SEARCH
     })
 
     if (result.tracks.length === 0){
-        await interaction.editReply('no results found')
+        await interaction.editReply('no results found for ', searchTerm)
         return
     }
     const song = result.tracks[0]

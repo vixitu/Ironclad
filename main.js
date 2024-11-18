@@ -4,11 +4,12 @@ const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
 const { Client, GatewayIntentBits, Collection, ActivityType } = require("discord.js");
 const { MongoClient } = require('mongodb');
-const { Player, QueryType } = require ("discord-player")
+const { Player, QueryType, useMainPlayer } = require ("discord-player")
 const express = require('express')
 const { createServer } = require('node:http')
 const { Server } = require('socket.io')
 const { YoutubeExtractor } = require('@discord-player/extractor')
+const { YoutubeiExtractor } = require("discord-player-youtubei")
 
 dotenv.config();
 const TOKEN = process.env.TOKEN;
@@ -167,7 +168,8 @@ io.on('connection', (socket) => {
 
     async function addSongFun(id, input, callback) {
         console.log('RECEIVED ADDSONG COMMAND FROM SERVER: ' + id)
-        client.player.extractors.register(YoutubeExtractor)
+        const player = useMainPlayer();
+        player.extractors.register(YoutubeiExtractor, {});
         const guild = client.guilds.cache.get(id)
         const queue = await client.player.nodes.create(guild)
         if(!queue){

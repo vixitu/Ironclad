@@ -75,11 +75,42 @@ module.exports = {
       }
     } else {
       // Just a regular search term, or a youtube URL
-      result = await player.search(searchTerm, {
-        requestedBy: interaction.user,
-        searchEngine: QueryType.YOUTUBE_SEARCH,
-      });
-      console.log(result.tracks[0].title + " - youtube song")
+      if (searchTerm.includes("www.youtube.com/playlist")) {
+        // Youtube playlist
+        result = await player.search(searchTerm, {
+          requestedBy: interaction.user,
+          searchEngine: QueryType.YOUTUBE_PLAYLIST,
+        });
+        console.log(result.playlist.title + " - youtube playlist");
+        if (result.tracks.length === 0) {
+          await interaction.editReply("no results found for ", searchTerm);
+          return;
+        }
+        const playlist = result.playlist;
+        await queue.addTrack(result.tracks);
+        if (!queue.node.isPlaying()) await queue.node.play();
+
+        const embed = new EmbedBuilder()
+          .setDescription(
+            `**The songs songs from [${playlist.title}](${playlist.url})** have been added to the Queue`
+          )
+          .setThumbnail(playlist.thumbnail)
+          .setColor("#FF0000")
+          .setFooter({ text: `Length: ${playlist.length}` });
+
+        await interaction.editReply({ embeds: [embed] });
+
+        return;
+      } else {
+        // Just a regular youtube URL / search
+        result = await player.search(searchTerm, {
+          requestedBy: interaction.user,
+          searchEngine: QueryType.YOUTUBE_SEARCH,
+        });
+        console.log(result.tracks[0].title + " - youtube song");
+      }
+      
+    }
       if (result.tracks.length === 0) {
         await interaction.editReply("no results found for ", searchTerm);
         return;
@@ -96,6 +127,5 @@ module.exports = {
         .setFooter({ text: `Duration: ${song.duration}` });
 
       await interaction.editReply({ embeds: [embed] });
-    }
-  },
-};
+    },
+  };

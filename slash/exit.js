@@ -9,10 +9,14 @@ module.exports = {
   run: async ({ client, interaction }) => {
     
     const queue = await client.player.nodes.get(interaction.guild)
+    try{
+        await queue.destroy();
+        await interaction.editReply('why :(');
+    } catch (e){
+      await interaction.editReply("Something went wrong, sorry, but here's why:", e)
+      console.log(e);
+    }
 
-    await queue.destroy()
-
-    await interaction.editReply('why :(');
     
   },
 }

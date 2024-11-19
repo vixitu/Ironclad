@@ -31,11 +31,19 @@ module.exports = {
     if(!queue.connection) await queue.connect(interaction.member.voice.channel)
 
     let searchTerm = interaction.options.getString('searchterm');
-    const result = await player.search(searchTerm, {
+    var result;
+    if(searchTerm.substring(0,31).startsWith("https://open.spotify.com/track/")){
+      result = await player.search(searchTerm, {
+        requestedBy: interaction.user,
+        searchEngine: QueryType.SPOTIFY_SONG
+      })
+    } else {
+      result = await player.search(searchTerm, {
         requestedBy: interaction.user,
         searchEngine: QueryType.YOUTUBE_SEARCH
-    })
-
+      })
+    }
+    
     if (result.tracks.length === 0){
         await interaction.editReply('no results found for ', searchTerm)
         return

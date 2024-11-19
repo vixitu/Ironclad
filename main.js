@@ -24,6 +24,7 @@ const client = new Client({
     ]
 });
 
+
 const app = express()
 const server = createServer(app)
 const io = new Server(server)
@@ -207,6 +208,8 @@ client.player.extractors.loadDefault();
 client.on("ready", async () => {
     console.log(`Logged in as ${client.user.tag}`);
     
+    const player = useMainPlayer();
+    player.extractors.register(YoutubeiExtractor, {});
 
     // Retrieve all guilds the bot is in
     const guilds = client.guilds.cache;

@@ -32,6 +32,7 @@ module.exports = {
 
     let searchTerm = interaction.options.getString('searchterm');
     var result;
+    // Spotify support!
     if(searchTerm.substring(0,31).startsWith("https://open.spotify.com/track/")){
       result = await player.search(searchTerm, {
         requestedBy: interaction.user,

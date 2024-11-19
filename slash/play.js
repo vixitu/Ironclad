@@ -45,7 +45,7 @@ module.exports = {
           requestedBy: interaction.user,
           searchEngine: QueryType.SPOTIFY_PLAYLIST,
         });
-
+        console.log(result.playlist.title + " - spotify playlist")
         if (result.tracks.length === 0) {
           await interaction.editReply("no results found for ", searchTerm);
           return;
@@ -71,6 +71,7 @@ module.exports = {
           requestedBy: interaction.user,
           searchEngine: QueryType.SPOTIFY_SONG,
         });
+        console.log(result.tracks[0].title + " - spotify song")
       }
     } else {
       // Just a regular search term, or a youtube URL
@@ -78,7 +79,7 @@ module.exports = {
         requestedBy: interaction.user,
         searchEngine: QueryType.YOUTUBE_SEARCH,
       });
-
+      console.log(result.tracks[0].title + " - youtube song")
       if (result.tracks.length === 0) {
         await interaction.editReply("no results found for ", searchTerm);
         return;

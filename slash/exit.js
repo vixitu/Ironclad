@@ -4,13 +4,13 @@ const { Player } = require('discord-player')
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("exit")
-    .setDescription("Exits the channel."),
+    .setName("clear")
+    .setDescription("Clears the queue."),
   run: async ({ client, interaction }) => {
     
     const queue = await client.player.nodes.get(interaction.guild)
     try{
-        await queue.destroy();
+        await queue.clear();
         await interaction.editReply('why :(');
     } catch (e){
       await interaction.editReply("Something went wrong, sorry, but here's why:", e)

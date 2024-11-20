@@ -11,7 +11,7 @@ module.exports = {
     const queue = await client.player.nodes.get(interaction.guild)
     try{
         await queue.clear();
-        await interaction.editReply('why :(');
+        await interaction.editReply('Cleared the queue.');
     } catch (e){
       await interaction.editReply("Something went wrong, sorry, but here's why:", e)
       console.log(e);

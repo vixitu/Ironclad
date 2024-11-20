@@ -11,16 +11,12 @@ module.exports = {
         .addStringOption((option) =>
             option.setName("bug").setDescription("Please describe the bug").setRequired(true)),
     run: async ({ client, interaction }) => {
-        const db = dbClient.db('PanzerDB');
-        const serverID = interaction.guildId; // Get the server ID
-        const collection = db.collection(`bugCollection`);
-        const userID = interaction.user.id; // Get the user's ID
-        collection.insertOne({
-            userID: userID,
-            serverID: serverID,
-            bugReport: interaction.options.getString('bug')
-        })
+        // Send a direct message to vixitu, with the bug. OR even better: dm the user who ran the command so they can describe it and also add images/attachments
+        const report = interaction.options.getString("bug");
+        const vixituID = '306361580533317632';
+        client.users.send(vixituID, report);
         console.log('bug reported!')
+        await interaction.editReply("Thanks for submitting a bug/feature!");
 
     }
 }

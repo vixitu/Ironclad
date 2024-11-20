@@ -32,43 +32,53 @@ module.exports = {
         const amountOfQuestions = interaction.options.getString("questions")
         const category = interaction.options.getString("category")
         const difficulty = interaction.options.getString("difficulty")
-        if(category){
-            axios(`https://opentdb.com/api.php?amount=${amountOfQuestions}&category=${category}&difficulty=${difficulty}`).then((response) => {
-                const html = response.data;
-                console.log(html);
-            });
 
-            return;
-        }
-        axios(`https://opentdb.com/api.php?amount=${amountOfQuestions}&difficulty=${difficulty}`).then((response) => {
+        const url = category
+          ? `https://opentdb.com/api.php?amount=${amountOfQuestions}&category=${category}&difficulty=${difficulty}`
+          : `https://opentdb.com/api.php?amount=${amountOfQuestions}&difficulty=${difficulty}`;
+
+        axios(url).then(async (response) => {
             const html = response.data;
             console.log(html);
 
-            response.data.results.forEach(async result => {
+            for(const result of response.data.results) {
                 const embed = new EmbedBuilder()
                     .setColor("#355E3B")
                     .setTitle(`"${result.question}"`)
                     .setFooter({ text: `${result.difficulty} - ${result.category}`})
-                    .setDescription(`${result.incorrect_answers.join(", ")}, ${result.correct_answer}`)
+                    .setDescription(`||${result.incorrect_answers.join(", ")}, ${result.correct_answer}||`)
                     .setTimestamp()
+
                     await interaction.channel.send({ embeds: [embed] });
 
-                    const collector = interaction.channel.createMessageCollector({ time: 20_000 });
-                    collector.on('collect', m => {
-                        console.log('collected a msg')
-                        if(m.content.toUpperCase() == result.correct_answer.toUpperCase()){
-                            message.channel.send("CORRECT!")
-                            return;
-                        }
-                    });
-                    
-                    collector.on('end', collected => {
-                        console.log(`Collected ${collected.size} items`);
-                        return;
-                    });
+                    var correctAnswer = await waitForCorrectAnswer(interaction.channel, result.correct_answer);
 
-            });
+                    if (!correctAnswer) {
+                      await interaction.channel.send("Time's up! The correct answer was: " + result.correct_answer );
+                    }
+
+            }
         });
+
+        async function waitForCorrectAnswer(channel, correctAnswer) {
+          return new Promise((resolve) => {
+            const filter = m => m.content.toUpperCase().includes(correctAnswer.toUpperCase());
+            const collector = channel.createMessageCollector({ filter, time: 20_000 });
+
+            collector.on("collect", (m) => {
+                m.reply("✅ **Correct!** Well done! 🎉");
+                collector.stop("answered");
+                resolve(true);
+            });
+
+            collector.on("end", (_, reason) => {
+                console.log(`Collected ${_.size}`)
+              if (reason !== "answered") {
+                resolve(false);
+              }
+            });
+          });
+        }
 
     },
 }

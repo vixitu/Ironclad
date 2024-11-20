@@ -33,6 +33,8 @@ module.exports = {
         const category = interaction.options.getString("category")
         const difficulty = interaction.options.getString("difficulty")
 
+        var correctAnswerCount;
+
         const url = category
           ? `https://opentdb.com/api.php?amount=${amountOfQuestions}&category=${category}&difficulty=${difficulty}`
           : `https://opentdb.com/api.php?amount=${amountOfQuestions}&difficulty=${difficulty}`;
@@ -42,31 +44,59 @@ module.exports = {
             console.log(html);
 
             for(const result of response.data.results) {
-                const embed = new EmbedBuilder()
-                    .setColor("#355E3B")
-                    .setTitle(`"${result.question}"`)
-                    .setFooter({ text: `${result.difficulty} - ${result.category}`})
-                    .setDescription(`||${result.incorrect_answers.join(", ")}, ${result.correct_answer}||`)
-                    .setTimestamp()
 
-                    await interaction.channel.send({ embeds: [embed] });
+              const allAnswers = [
+                ...result.incorrect_answers,
+                result.correct_answer,
+              ];
 
-                    var correctAnswer = await waitForCorrectAnswer(interaction.channel, result.correct_answer);
+              // Shuffle de antwoorden willekeurig
+              const shuffledAnswers = allAnswers
+                .map((answer) => ({ sort: Math.random(), value: answer })) // Voeg een willekeurige sorteerwaarde toe
+                .sort((a, b) => a.sort - b.sort) // Sorteer op de willekeurige waarde
+                .map((item) => item.value); // Verwijder de sorteervelden
 
-                    if (!correctAnswer) {
-                      await interaction.channel.send("Time's up! The correct answer was: " + result.correct_answer );
-                    }
+              // Format de antwoorden met nummers en nieuwe regels
+              const formattedAnswers = shuffledAnswers
+                .map((answer, index) => `${index + 1}. ${answer}`) // Voeg nummers toe
+                .join("\n"); // Voeg antwoorden samen met een nieuwe regel
 
+              const embed = new EmbedBuilder()
+                .setColor("#355E3B")
+                .setTitle(`"${result.question}"`)
+                .setFooter({
+                  text: `${result.difficulty} - ${result.category}`,
+                })
+                .setDescription(formattedAnswers)
+                .setTimestamp();
+
+              await interaction.channel.send({ embeds: [embed] });
+
+              var correctAnswer = await waitForCorrectAnswer(
+                interaction.channel,
+                result.correct_answer
+              );
+
+              if (!correctAnswer) {
+                await interaction.channel.send(
+                  "Time's up! The correct answer was: " + result.correct_answer
+                );
+              }
             }
         });
 
+        // Finished all the questions
+        await interaction.channel.send(`Correct: ${correctAnswerCount} / ${amountOfQuestions}`)
+
+
         async function waitForCorrectAnswer(channel, correctAnswer) {
           return new Promise((resolve) => {
-            const filter = m => m.content.toUpperCase().includes(correctAnswer.toUpperCase());
-            const collector = channel.createMessageCollector({ filter, time: 20_000 });
+            const collector = channel.createMessageCollector({ time: 20_000 });
 
             collector.on("collect", (m) => {
+                if(!m.content.toUpperCase().includes(correctAnswer.toUpperCase())) { m.reply("❌ **Wrong!** Better luck next time! 😿"); collector.stop("wrong"); resolve(true); }
                 m.reply("✅ **Correct!** Well done! 🎉");
+                correctAnswerCount++;
                 collector.stop("answered");
                 resolve(true);
             });

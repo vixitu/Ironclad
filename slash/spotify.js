@@ -7,7 +7,7 @@ const { YoutubeiExtractor } = require("discord-player-youtubei");
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("spotify")
-		.setDescription("loads songs from spotify")
+		.setDescription("loads songs from spotify [DEPRECATED, use /play]")
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName("song")

@@ -8,7 +8,7 @@ const { dbClient } = require('../main.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("playlist")
-    .setDescription("Plays a playlist.")
+    .setDescription("Plays a playlist. [DEPRECATED, use /play]")
     .addStringOption(option =>
 		option.setName('url')
 			.setDescription('The playlist to search for!')

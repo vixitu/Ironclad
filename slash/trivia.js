@@ -65,6 +65,8 @@ module.exports = {
     console.log(multipleChoices);
     var correctAnswerCount = 0;
 
+    await interaction.editReply(`Starting a game of trivia on ${difficulty} difficulty which will last for ${amountOfQuestions} rounds.`)
+
     const url = category
       ? `https://opentdb.com/api.php?amount=${amountOfQuestions}&category=${category}&difficulty=${difficulty}`
       : `https://opentdb.com/api.php?amount=${amountOfQuestions}&difficulty=${difficulty}`;

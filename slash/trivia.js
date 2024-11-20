@@ -37,7 +37,18 @@ module.exports = {
           { name: "History", value: "23" },
           { name: "Geography", value: "22" },
           { name: "Politics", value: "24" },
-          { name: "Mythology", value: "10" }
+          { name: "Mythology", value: "10" },
+          { name: "Video Games", value: "15" },
+          { name: "Board Games", value: "16" },
+          { name: "Music", value: "12" },
+          { name: "Film", value: "11" },
+          { name: "Books", value: "10" },
+          { name: "Sports", value: "21" },
+          { name: "Art", value: "25" },
+          { name: "Anime", value: "31" },
+          { name: "Animals", value: "27" },
+          { name: "Vehicles", value: "28" },
+          { name: "Science & Nature", value: "17" },
         )
     )
     .addBooleanOption((option) =>

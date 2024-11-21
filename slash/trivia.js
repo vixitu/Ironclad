@@ -147,21 +147,21 @@ module.exports = {
     
 
     async function waitForCorrectAnswer(channel, correctAnswer, wrongAnswers, response) {
-      return new Promise((resolve) => {
+      return new Promise(async (resolve) => {
 
         try{
           const filter = (i) => i.user.id === interaction.user.id;
-          const confirmation = response.awaitMessageComponent({ filter, time: 20_000 });
+          const confirmation = await response.awaitMessageComponent({ filter, time: 20_000 });
 
           const selectedIndex = parseInt(confirmation.customId.replace("option", "")) - 1; // Get the index from customId
           const selectedAnswer = shuffledAnswers[selectedIndex];
 
           if (selectedAnswer === correctAnswer) {
-            confirmation.editReply({ content: "✅ **Correct!** Well done! 🎉", ephemeral: true });
+            await confirmation.editReply({ content: "✅ **Correct!** Well done! 🎉", ephemeral: true });
             correctAnswerCount++;
             resolve(true);
           } else {
-            confirmation.editReply({
+            await confirmation.editReply({
               content: `❌ **Wrong!** The correct answer was: ${correctAnswer}`,
               ephemeral: true,
             });

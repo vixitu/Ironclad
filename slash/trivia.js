@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const puppeteer = require("puppeteer");
 const axios = require("axios");
 const cheerio = require("cheerio");
@@ -78,35 +78,60 @@ module.exports = {
       for (const result of response.data.results) {
         const allAnswers = [...result.incorrect_answers, result.correct_answer];
 
-        // Shuffle de antwoorden willekeurig
+        // Shuffle answers
         const shuffledAnswers = allAnswers
           .map((answer) => ({ sort: Math.random(), value: answer })) // Voeg een willekeurige sorteerwaarde toe
           .sort((a, b) => a.sort - b.sort) // Sorteer op de willekeurige waarde
           .map((item) => item.value); // Verwijder de sorteervelden
 
-        // Format de antwoorden met nummers en nieuwe regels
-        const formattedAnswers = shuffledAnswers
-          .map((answer, index) => `${index + 1}. ${answer}`) // Voeg nummers toe
-          .join("\n"); // Voeg antwoorden samen met een nieuwe regel
+
+        // Get index of correct answer
+        const correctIndex = shuffledAnswers.indexOf(result.correct_answer);
 
         const embed = new EmbedBuilder()
-          .setColor("#355E3B")
-          .setTitle(`"${result.question}"`)
-          .setFooter({
-            text: `${result.difficulty} - ${result.category}`,
-          })
-          .setTimestamp();
+            .setColor("#355E3B")
+            .setTitle(`"${result.question}"`)
+            .setFooter({
+              text: `${result.difficulty} - ${result.category}`,
+            })
+            .setTimestamp();
 
+
+        const buttons = new ActionRowBuilder();
+
+        // Add buttons for each answer
+        shuffledAnswers.forEach((answer, index) => {
+          buttons.addComponents(
+              new ButtonBuilder()
+                  .setCustomId(`answer_${index}`)
+                  .setLabel(`${index + 1}`)
+                  .setStyle(ButtonStyle.Primary)
+          );
+        });
+
+        const formattedAnswers = shuffledAnswers
+            .map((answer, index) => `${index + 1}. ${answer}`) // Add numbers to each answer
+            .join("\n"); // Combine into a single string with line breaks
+
+        let triviaMessage;
         if (multipleChoices) {
           embed.setDescription(formattedAnswers);
+          triviaMessage = await interaction.channel.send({
+            embeds: [embed],
+            components: [buttons],
+          })
+        } else {
+          triviaMessage = await interaction.channel.send({
+            embeds: [embed],
+          })
         }
-
-        await interaction.channel.send({ embeds: [embed] });
 
         var correctAnswer = await waitForCorrectAnswer(
           interaction.channel,
           result.correct_answer,
-          result.incorrect_answers
+          result.incorrect_answers,
+            triviaMessage,
+            correctIndex
         );
 
         if (!correctAnswer) {
@@ -123,11 +148,34 @@ module.exports = {
 
     
 
-    async function waitForCorrectAnswer(channel, correctAnswer, wrongAnswers) {
+    async function waitForCorrectAnswer(channel, correctAnswer, wrongAnswers, triviaMessage, correctIndex) {
       return new Promise((resolve) => {
+        const buttonCollector = triviaMessage.createMessageComponentCollector({ time: 20_000 })
+
+        buttonCollector.on("collect", async (buttonInteraction) => {
+          if(buttonInteraction.user.bot) return;
+          const selectedAnswerIndex = parseInt(buttonInteraction.customId.split("_")[1]);
+
+          if (selectedAnswerIndex === correctIndex) {
+            correctAnswerCount++;
+            await buttonInteraction.reply("✅ **Correct!** Well done! 🎉");
+            buttonCollector.stop("answered");
+            resolve(true);
+            return;
+          } else {
+            await buttonInteraction.reply(
+                `❌ **Wrong!** The correct answer was: ${correctAnswer}.`
+            );
+            buttonCollector.stop("wrong");
+            resolve(true); // Ga verder naar de volgende vraag
+            return;
+          }
+        });
+
         const collector = channel.createMessageCollector({ time: 20_000 });
 
         collector.on("collect", (m) => {
+          if(m.author.bot) return;
           if (
             wrongAnswers.some((wrong) =>
               m.content.toUpperCase().includes(wrong.toUpperCase())

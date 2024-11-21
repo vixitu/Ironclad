@@ -15,12 +15,20 @@ module.exports = {
         .setDescription("The input to search for!")
         .setAutocomplete(true)
         .setRequired(true)
-    ),
+    )
+      .addBooleanOption((option) =>
+        option
+          .setName("insert-first")
+          .setDescription("Whether to insert the song first in queue")
+          .setRequired(false)
+      ),
   run: async ({ client, interaction }) => {
     const serverID = interaction.guildId;
     const db = dbClient.db("PanzerDB");
     const collection = db.collection(`music_${serverID}`);
     const player = useMainPlayer();
+    const insertfirst = interaction.options.getBoolean("insert-first");
+
     player.extractors.register(YoutubeiExtractor, {});
 
     if (!interaction.member.voice.channel) {
@@ -102,7 +110,7 @@ module.exports = {
 
         return;
       } else {
-        // Just a regular youtube URL / search
+        // Just a regular YouTube URL / search
         result = await player.search(searchTerm, {
           requestedBy: interaction.user,
           searchEngine: QueryType.YOUTUBE_SEARCH,
@@ -116,7 +124,7 @@ module.exports = {
         return;
       }
       const song = result.tracks[0];
-      await queue.addTrack(song);
+      insertfirst ? await queue.insertTrack(song, 0) : await queue.addTrack(song);
       if (!queue.node.isPlaying()) await queue.node.play();
 
       const embed = new EmbedBuilder()

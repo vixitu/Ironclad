@@ -140,7 +140,7 @@ module.exports = {
           );
         }
       }
-      // Finished all the questions
+      // Finished all the questions, show the user results
       interaction.channel.send(
         `Correct: ${correctAnswerCount} / ${amountOfQuestions}`
       );

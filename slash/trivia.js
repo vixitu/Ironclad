@@ -101,12 +101,35 @@ module.exports = {
           embed.setDescription(formattedAnswers);
         }
 
-        await interaction.channel.send({ embeds: [embed] });
+
+        const option1 = new ButtonBuilder()
+            .setCustomId('option1')
+            .setLabel('1')
+            .setStyle(ButtonStyle.Primary);
+
+        const option2 = new ButtonBuilder()
+            .setCustomId('option2')
+            .setLabel('2')
+            .setStyle(ButtonStyle.Primary);
+        const option3 = new ButtonBuilder()
+            .setCustomId('option3')
+            .setLabel('3')
+            .setStyle(ButtonStyle.Primary);
+        const option4 = new ButtonBuilder()
+            .setCustomId('option4')
+            .setLabel('4')
+            .setStyle(ButtonStyle.Primary);
+
+        const row = new ActionRowBuilder()
+            .addComponents(option1, option2, option3, option4);
+
+        const response = await interaction.channel.send({ embeds: [embed], components: [row] });
 
         var correctAnswer = await waitForCorrectAnswer(
           interaction.channel,
           result.correct_answer,
-          result.incorrect_answers
+          result.incorrect_answers,
+            response,
         );
 
         if (!correctAnswer) {
@@ -123,8 +146,31 @@ module.exports = {
 
     
 
-    async function waitForCorrectAnswer(channel, correctAnswer, wrongAnswers) {
+    async function waitForCorrectAnswer(channel, correctAnswer, wrongAnswers, response) {
       return new Promise((resolve) => {
+
+        try{
+          const filter = (i) => i.user.id === interaction.user.id;
+          const confirmation = response.awaitMessageComponent({ filter, time: 20_000 });
+
+          const selectedIndex = parseInt(confirmation.customId.replace("option", "")) - 1; // Get the index from customId
+          const selectedAnswer = shuffledAnswers[selectedIndex];
+
+          if (selectedAnswer === correctAnswer) {
+            confirmation.editReply({ content: "✅ **Correct!** Well done! 🎉", ephemeral: true });
+            correctAnswerCount++;
+            resolve(true);
+          } else {
+            confirmation.editReply({
+              content: `❌ **Wrong!** The correct answer was: ${correctAnswer}`,
+              ephemeral: true,
+            });
+            resolve(false);
+          }
+        } catch (e) {
+          resolve(false);
+        }
+
         const collector = channel.createMessageCollector({ time: 20_000 });
 
         collector.on("collect", (m) => {

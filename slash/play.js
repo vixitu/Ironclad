@@ -1,9 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { EmbedBuilder } = require("discord.js");
 const { QueryType, useMainPlayer } = require("discord-player");
-const { YoutubeExtractor } = require("@discord-player/extractor");
 const { dbClient } = require("../main.js");
-const { YoutubeiExtractor } = require("discord-player-youtubei");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -16,20 +14,18 @@ module.exports = {
         .setAutocomplete(true)
         .setRequired(true)
     )
-      .addBooleanOption((option) =>
-        option
-          .setName("insert-first")
-          .setDescription("Whether to insert the song first in queue")
-          .setRequired(false)
-      ),
+    .addBooleanOption((option) =>
+      option
+        .setName("insert-first")
+        .setDescription("Whether to insert the song first in queue")
+        .setRequired(false)
+    ),
   run: async ({ client, interaction }) => {
     const serverID = interaction.guildId;
     const db = dbClient.db("PanzerDB");
     const collection = db.collection(`music_${serverID}`);
     const player = useMainPlayer();
     const insertfirst = interaction.options.getBoolean("insert-first");
-
-    player.extractors.register(YoutubeiExtractor, {});
 
     if (!interaction.member.voice.channel) {
       await interaction.reply(
@@ -53,7 +49,7 @@ module.exports = {
           requestedBy: interaction.user,
           searchEngine: QueryType.SPOTIFY_PLAYLIST,
         });
-        console.log(result.playlist.title + " - spotify playlist")
+        console.log(result.playlist.title + " - spotify playlist");
         if (result.tracks.length === 0) {
           await interaction.editReply("no results found for ", searchTerm);
           return;
@@ -79,7 +75,7 @@ module.exports = {
           requestedBy: interaction.user,
           searchEngine: QueryType.SPOTIFY_SONG,
         });
-        console.log(result.tracks[0].title + " - spotify song")
+        console.log(result.tracks[0].title + " - spotify song");
       }
     } else {
       // Just a regular search term, or a youtube URL
@@ -117,23 +113,22 @@ module.exports = {
         });
         console.log(result.tracks[0].title + " - youtube song");
       }
-      
     }
-      if (result.tracks.length === 0) {
-        await interaction.editReply("no results found for ", searchTerm);
-        return;
-      }
-      const song = result.tracks[0];
-      insertfirst ? await queue.insertTrack(song, 0) : await queue.addTrack(song);
-      if (!queue.node.isPlaying()) await queue.node.play();
+    if (result.tracks.length === 0) {
+      await interaction.editReply("no results found for ", searchTerm);
+      return;
+    }
+    const song = result.tracks[0];
+    insertfirst ? await queue.insertTrack(song, 0) : await queue.addTrack(song);
+    if (!queue.node.isPlaying()) await queue.node.play();
 
-      const embed = new EmbedBuilder()
-        .setColor("#FF0000")
-        .setTitle(`${song.title}`)
-        .setDescription(`Added **[${song.title}](${song.url})**`)
-        .setThumbnail(song.thumbnail)
-        .setFooter({ text: `Duration: ${song.duration}` });
+    const embed = new EmbedBuilder()
+      .setColor("#FF0000")
+      .setTitle(`${song.title}`)
+      .setDescription(`Added **[${song.title}](${song.url})**`)
+      .setThumbnail(song.thumbnail)
+      .setFooter({ text: `Duration: ${song.duration}` });
 
-      await interaction.editReply({ embeds: [embed] });
-    },
-  };
+    await interaction.editReply({ embeds: [embed] });
+  },
+};

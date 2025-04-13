@@ -439,6 +439,6 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 client.login(TOKEN);
-require("./dashboard/server");
+// require("./dashboard/server"); // UNCOMMENT THIS TO START THE DASHBOARD!
 (module.exports = client), app;
 console.log("LOGGED IN!");

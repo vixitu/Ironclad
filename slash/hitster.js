@@ -3,10 +3,10 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
 } = require("@discordjs/builders");
-const { Song } = require("../initModels");
+const { Song, HitsterLeaderboard } = require("../initModels");
 const { fn } = require("sequelize");
-
-const { dbClient } = require("../main.js");
+const stringSimilarity = require("string-similarity");
+const { dbClient, user } = require("../main.js");
 const {
   EmbedBuilder,
   ButtonStyle,
@@ -17,21 +17,59 @@ const { QueryType, useMainPlayer } = require("discord-player");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("hitster")
-    .setDescription("Hitster but on Discord!"),
+    .setDescription("Hitster but on Discord!")
+    .addBooleanOption((option) =>
+      option
+        .setName("stop")
+        .setDescription("Stops the current game of Hitster!")
+    )
+    .addBooleanOption((option) =>
+      option
+        .setName("skip")
+        .setDescription("Skips the current song playing in Hitster!")
+    ),
   run: async ({ client, interaction }) => {
+    if (interaction.options.getBoolean("stop")) {
+      await StopHitster(interaction, queue);
+      return;
+    } else if (interaction.options.getBoolean("skip")) {
+      await interaction.editReply(
+        `The song was **${song.title}** by **${song.artist}** released in **${song.year}**`
+      );
+
+      await startNewHitster({ client, interaction });
+      return;
+    }
+
     await startNewHitster({ client, interaction });
   },
 };
 
+var queue = null;
+var song = null;
+
 async function startNewHitster({ client, interaction }) {
+  if (!interaction.member.voice.channel) {
+    await interaction.editReply(
+      "Please join a Voice Channel to play Hitster! :3"
+    );
+    return;
+  }
+
   await getRandomSong().then((song) => {
     playSong({ client, interaction, song });
   });
+  try {
+    await populateDatabase(interaction.member.voice.channel);
+  } catch (e) {
+    await interaction.editReply("Are you sure you are in a voice channel?");
+    console.error(e);
+  }
 }
 
 async function getRandomSong() {
   try {
-    const song = await Song.findOne({ order: fn("RANDOM") }); // Use sequelize.random() as a method
+    song = await Song.findOne({ order: fn("RANDOM") }); // Use sequelize.random() as a method
     return song; // Return the song directly
   } catch (e) {
     console.error(e);
@@ -45,12 +83,7 @@ async function playSong({ client, interaction, song }) {
   const collection = db.collection(`music_${serverID}`);
   const player = useMainPlayer();
 
-  if (!interaction.member.voice.channel) {
-    await interaction.reply("Please join a Voice Channel to play Hitster! :3");
-    return;
-  }
-
-  const queue = await client.player.nodes.create(interaction.guild);
+  queue = await client.player.nodes.create(interaction.guild);
   if (!queue.connection) await queue.connect(interaction.member.voice.channel);
 
   try {
@@ -61,9 +94,10 @@ async function playSong({ client, interaction, song }) {
   }
 
   let searchTerm = `${song.artist} - ${song.title}`;
+  console.log(searchTerm);
   var result = await player.search(searchTerm, {
     requestedBy: interaction.user,
-    searchEngine: QueryType.YOUTUBE_SEARCH,
+    searchEngine: QueryType.AUTO_SEARCH,
   });
 
   const track = result.tracks[0];
@@ -78,6 +112,13 @@ async function playSong({ client, interaction, song }) {
   }
 
   if (!queue.node.isPlaying()) await queue.node.play();
+
+  await waitForAnswers({
+    client: client,
+    interaction: interaction,
+    channel: interaction.channel,
+    song: song,
+  });
 
   const embed = new EmbedBuilder()
     .setColor("#FF0000")
@@ -108,7 +149,7 @@ async function playSong({ client, interaction, song }) {
   try {
     const confirmation = await response.awaitMessageComponent({
       filter: collectorFilter,
-      time: 120_000,
+      time: 180_000,
     });
 
     if (confirmation.customId === "next") {
@@ -122,12 +163,139 @@ async function playSong({ client, interaction, song }) {
         content: "Hitster cancelled",
         components: [],
       });
+      await StopHitster(interaction, queue);
     }
   } catch (e) {
-    console.error(e);
+    console.log("time has ran out.");
     await interaction.editReply({
       content: "Hitster timed out",
       components: [],
     });
   }
+}
+
+async function waitForAnswers({ client, interaction, channel, song }) {
+  const filter = (response) => {
+    return !response.author.bot;
+  };
+
+  const collector = channel.createMessageCollector({
+    filter,
+    time: 180_000,
+  });
+
+  collector.on("collect", async (message) => {
+    const artist = song.artist.toLowerCase();
+    const title = song.title.toLowerCase();
+    const year = song.year.toString();
+
+    const titleartist = `${title} ${artist}`;
+
+    const similarity = stringSimilarity.compareTwoStrings(
+      titleartist.toLocaleLowerCase(),
+      message.content.toLowerCase()
+    );
+
+    console.log("Similarity: ", similarity);
+
+    // Check for matches
+    const TitleArtistMatch = similarity >= 0.85; // Adjust the threshold as needed
+    const yearMatch = message.content.toLowerCase().includes(year);
+    // Require both artist and title to match, or the year to match exactly
+    if (TitleArtistMatch || yearMatch) {
+      await message.react("✅");
+      await message.reply(
+        `Correct! The song was **${song.title}** by **${song.artist}** released in **${song.year}**`
+      );
+      await collector.stop();
+      startNewHitster({ client, interaction: interaction });
+      updateScore(interaction, message.author.id);
+      return;
+    } else if (similarity >= 0.55) {
+      await message.react("🤔");
+    } else {
+      await message.react("❌");
+    }
+  });
+
+  collector.on("end", async (collected) => {
+    if (collected.size === 0) {
+      await channel.send(
+        `Time's up! The song was **${song.title}** by **${song.artist}** released in **${song.year}**`
+      );
+    }
+  });
+}
+
+async function populateDatabase(voice) {
+  await voice.members.forEach((member) => {
+    if (member.user.bot) return; // Skip bots
+    const id = member.id;
+    HitsterLeaderboard.findOrCreate({
+      where: { discordUserId: id },
+      defaults: { score: 0 },
+    })
+      .then(([user, created]) => {
+        if (created) {
+          console.log(`User ${id} added to the database.`);
+        } else {
+          console.log(`User ${id} already exists in the database.`);
+        }
+      })
+      .catch((error) => {
+        console.error("Error adding user to the database:", error);
+      });
+  });
+}
+
+async function updateScore(interaction, userId) {
+  const [user, created] = await HitsterLeaderboard.findOrCreate({
+    where: { discordUserId: userId },
+    defaults: { score: 0 },
+  });
+
+  if (!created) {
+    user.score += 1;
+    await user.save();
+  }
+}
+
+async function SendLeaderboardEmbed(channel) {
+  const leaderboardEmbed = new EmbedBuilder()
+    .setColor("#FF0000")
+    .setTitle(`Leaderboard!`)
+    .setDescription(`Here are the top players:`)
+    .setTimestamp()
+    .setFooter({
+      text: "Hitster Leaderboard",
+    })
+    .addFields(
+      await HitsterLeaderboard.findAll({
+        order: [["score", "DESC"]],
+        limit: 5,
+      }).then((users) => {
+        return users.map((user, index) => ({
+          name: `Number ${index + 1}.`,
+          value: `<@${user.discordUserId}> with a score of ${user.score}!`,
+          inline: true,
+        }));
+      })
+    );
+
+  await channel.send({
+    embeds: [leaderboardEmbed],
+  });
+}
+
+async function StopHitster(interaction, queue) {
+  await queue.node.stop();
+  console.log("Hitster stopped.");
+  await SendLeaderboardEmbed(interaction.channel);
+  await HitsterLeaderboard.destroy({ where: {} })
+    .then(() => {
+      console.log("Leaderboard cleared.");
+    })
+    .catch((error) => {
+      console.error("Error clearing leaderboard:", error);
+    });
 }
